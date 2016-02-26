@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Runs{% endblock %}
+
+{% block body %}
+
+
+<div align="center">
+	<table border="1">
+		<tr>
+			<td>#</td>
+			<td>State</td>
+			<td>Task</td>
+			<td>Server</td>
+			<td>User</td>
+			<td>Date/time</td>
+		</tr>
+	{% for run in run_list %}
+		<tr>
+			<td><a href="/runs/{{ run.id }}">#{{ run.id }}</a></td>
+			<td>
+				  {% if run.state == '0' %}
+				    in_queue
+				  {% elif run.state == '1' %}
+				    in_progress
+				  {% elif run.state == '2' %}
+					done
+				  {% elif run.state == '3' %}
+				  	canceled
+				  {% else %}
+					Error
+				  {% endif %}
+				</td>
+			<td>{{ run.task.taskname }}</td>
+			<td>
+				{% if run.server.id %}
+					{{ run.server.alias }}
+				{% else %}
+				-
+				{% endif %}
+			</td>
+			<td></td>
+			
+			<td>{{ run.datetime.strftime('%H:%M:%S %d.%m.%Y') }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+</div>
+
+{% endblock %}

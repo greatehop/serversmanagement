@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+
+{% block title %}Tasks{% endblock %}
+{% block body %}
+
+<div align="center">
+	<table>
+	{% for task in task_list %}
+		<tr><td><a href="/tasks/{{ task.id }}"><h2>{{ task.name }}</h2></a></td></tr>
+	{% else %}
+	    Wrong task id!<br><br>
+	    <a href="/tasks">task list</a> 
+	{% endfor %}
+	</table>
+</div>
+
+        
+{% endblock %}

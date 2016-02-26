@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}<a href="/runs">Runs</a> - run details{% endblock %}
+
+{% block body %}
+
+<div align="center">
+	{% if run %}
+		Arguments
+		<table border="1">
+		   {% for key, value in run.attributes.items() %}
+			   <tr>
+			   		<td><b>{{ key }}</b></td>
+			      	<td>{{ value }}</td>
+			   </tr>
+		   {% endfor %}
+		</table>
+			
+		<br>
+		
+		<table border="1">
+			<tr><td><b>Task</b></td><td> {{ run.task.taskname }} </td></tr>
+			<tr><td><b>State</b></td><td>  				  
+				  {% if run.state == '0' %}
+				    in_queue
+				  {% elif run.state == '1' %}
+				    in_progress
+				  {% elif run.state == '2' %}
+					done
+				  {% elif run.state == '3' %}
+				  	canceled
+				  {% else %}
+					Error
+				  {% endif %} </td></tr>
+			<tr><td><b>Date/time</b></td><td>  {{ run.datetime.strftime('%H:%M:%S %d.%m.%Y')}}</td></tr>
+			
+			<tr><td><b>Servers</b></td><td> {% if run.server.id %} {{ run.server.alias }} {% else %}-{% endif %}</td></tr>
+		</table>
+		
+		<br>
+		
+		<b>cmd_out</b><br>
+		{{ run.cmd_out | safe }}
+		 
+	{% else %}
+	    Wrong run id!<br><br>
+	    <a href="/runs">run list</a> 
+    {% endif %}
+	
+	
+	
+</div>
+
+{% endblock %}

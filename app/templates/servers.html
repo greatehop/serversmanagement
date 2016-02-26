@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+
+{% block title %}Servers{% endblock %}
+
+{% block body %}
+
+<div align="center">
+	<h1>Add server</h1>
+	<form action="/servers" method="post">
+	{{form.hidden_tag()}}
+		<p>
+			<b>IP/FQDN:</b><br>
+			{{ form.ip(size=15) }}<br>
+		</p>
+		
+		<p>
+			<b>Alias:</b><br>
+			{{ form.alias(size=120) }}<br>
+		</p>
+		    <p><input type="submit" value="add"></p>
+	</form>
+</div>
+
+<div align="center">
+	{% for server in server_list %}
+		<p>{{ server.id }} {{ server.ip }} {{ server.alias }}<br>   
+		</p>
+	{% endfor %}
+</div>
+
+<br>
+	
+{% endblock %}
