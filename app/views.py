@@ -15,12 +15,12 @@ def tasks(task_id=None):
         task = models.Task.query.get(task_id)
 
         #TODO: refactor it as pliugins
-        
+
         #TODO: fix it
         if task_id == 1:
             form = forms.TaskDeployMOSForm()
             if form.validate_on_submit():
-                
+
                 #TODO: class???
                 server_id = tools.get_server()
                 if server_id is not None:
@@ -29,18 +29,18 @@ def tasks(task_id=None):
                     db.session.commit()
                 else:
                     run_state = config.run_state['in_queue']
-                    
+
                 #TODO: fix task auth
                 task_auth = 'dev'
                 cmd_out = tools.run_task(task.taskname, task.taskfile, task_auth)
 
                 #TODO: fix cmd_out with \n
-                
+
                 task = models.Run(
                     #user_id=user_id,
                     server_id=server_id,
                     state=run_state,
-                    task_id=task_id, 
+                    task_id=task_id,
                     cmd_out=cmd_out,
                     attributes = {'deployment_name': form.deployment_name.data,
                                   'iso_url': form.iso_url.data,
@@ -50,22 +50,22 @@ def tasks(task_id=None):
                                   'keep_days': form.keep_days.data})
                 db.session.add(task)
                 db.session.commit()
-                
+
                 #TODO: add update output + env details
                 #ssh -f -N -L 11121:10.177.21.3:80 laba
 
                 #TODO: add update task state 
                 #TODO: update server state by ID
-                
+
                 return redirect('/runs')
             return render_template('tasks_deploy_mos.html', task=task, form=form)
-        
+
         elif task_id == 2:
             form = forms.TaskCleanMOSForm()
             if form.validate_on_submit():
                 return redirect('/runs')
             return render_template('tasks_clean_mos.html', task=task, form=form)
-        
+
         else:
             return render_template('tasks.html', task=task)
     else:
@@ -76,13 +76,13 @@ def tasks(task_id=None):
 def runs(run_id=None):
     #TODO: add filter by your or running runs
     run_list = models.Run.query.order_by(desc(models.Run.id)).limit(config.last_runs).all()
-    
-    #TODO: pagination 
-    
+
+    #TODO: pagination
+
     #TODO: fix wrong request runs/1335d
-    
+
     #TODO: all runs, your runs
-    
+
     if run_id is not None:
         run = models.Run.query.get(run_id)
         return render_template('runs_details.html', run=run)
@@ -95,7 +95,7 @@ def servers():
     if form.validate_on_submit():
 
         #TODO: add run ssh-copy-id
-        
+
         #TODO: check uniq IP
         server = models.Server(ip=form.ip.data, alias=form.alias.data)
         db.session.add(server)

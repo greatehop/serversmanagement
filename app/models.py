@@ -56,7 +56,3 @@ class Run(db.Model):
         self.task_id = task_id
         self.attributes = attributes
         self.datetime = datetime.datetime.utcnow()
-        if server_id is not None:
-            self.server_id = server_id
-        if cmd_out is not None:
-            self.cmd_out = cmd_out
