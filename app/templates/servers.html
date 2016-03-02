@@ -23,10 +23,13 @@
 </div>
 
 <div align="center">
-	{% for server in server_list %}
-		<p>{{ server.id }} {{ server.ip }} {{ server.alias }}<br>   
-		</p>
-	{% endfor %}
+	{% if server_list %}
+		<h1>Servers</h1>
+		{% for server in server_list %}
+			<p>{{ server.id }} {{ server.ip }} {{ server.alias }}<br>   
+			</p>
+		{% endfor %}
+	{% endif %}
 </div>
 
 <br>

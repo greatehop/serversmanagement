@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+
+<form action="" method="post" name="login">
+    {{form.hidden_tag()}}
+    Login via Launchpad OpenID<br><br>
+
+    <p><input type="submit" value="Sign In" class="btn"></p>
+    
+</form>
+
+{% endblock %}

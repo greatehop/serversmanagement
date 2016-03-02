@@ -36,24 +36,34 @@
           <a class="brand" href="/about">ServersManagement</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
-              Logged in as <a href="#" class="navbar-link">Username</a>
+	            {% if g.user.is_authenticated %}
+	            	Logged in as <a href="/" >{{ g.user.name }}</a> | 
+	        		<a href="/logout">Logout</a>
+	        	{% else %}
+					<a href="/login">Sign in</a>
+	        	{% endif %}
             </p>
+            
             <ul class="nav">
-            	<li><a href="/home">Home</a></li>
+            	{% if g.user.is_authenticated %}
+            		<li><a href="/index">Home</a></li>
+            	{% endif %}
               <li><a href="/about">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
+
 				
    <div class="container-fluid">
 
       <div class="row-fluid">
         <div class="span3">
+        {% if g.user.is_authenticated %}
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li><a href="/home">Home</a></li>
+              <li><a href="/index">Home</a></li>
               <li><a href="/tasks">Tasks</a></li>
               <li><a href="/runs">Runs</a></li>
 			  <li><a href="/users">Users</a></li>
@@ -62,6 +72,8 @@
 
             </ul>
           </div><!--/.well -->
+        {% endif %}
+        
         </div><!--/span-->
         <div class="span9">
           <div class="hero-unit">
@@ -70,7 +82,7 @@
           
           <div class="row-fluid">
           	
-            <div class="span4">
+            <div>
                   {% block body %}
     			  {% endblock %}
               

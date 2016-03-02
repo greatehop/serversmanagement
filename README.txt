@@ -1,6 +1,6 @@
 DESCRIPTION: 
 
-ServersManagment - minijenkins, allows to run script on remote servers via web UI 
+ServersManagment - minijenkins, allows to run scripts on remote servers via WebUI 
 
 INSTALL:
 
@@ -26,12 +26,17 @@ supervisor
 - wsgi
 
 
-REQEEREMENTS:
+REQEREMENTS:
 
 """
-Flask-SocketIO
+fabric
+Flask
 Flask-sqlalchemy
 Flask-WTF
+Flask-OpenID
+Flask-Login
+Flask-SocketIO
+
 flask_ext_migrate
 python-migrate
 sqlalchemy-migrate

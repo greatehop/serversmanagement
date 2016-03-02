@@ -4,6 +4,7 @@ from wtforms.validators import Required
 
 #TODO: add/check validators
 
+#TODO: taskform for admin user ?  
 class TaskDeployMOSForm(Form):
     deployment_name = TextField('deployment_name', validators = [Required()])
     iso_url = TextField('iso_url', validators = [Required()])
@@ -39,7 +40,4 @@ class UserForm(Form):
     #TODO: arguments???
 
 class LoginForm(Form):
-    openid = TextField('openid', validators = [Required()])
-    remember_me = BooleanField('remember_me', default = True)
-
-#TODO: taskform for admin user ?    
+    pass  

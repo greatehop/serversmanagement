@@ -19,8 +19,13 @@
 		<br>
 		
 		<table border="1">
-			<tr><td><b>Task</b></td><td> {{ run.task.taskname }} </td></tr>
-			<tr><td><b>State</b></td><td>  				  
+			<tr>
+				<td><b>Task</b></td>
+				<td> {{ run.task.taskname }} </td>
+			</tr>
+			<tr>
+				<td><b>State</b></td>
+				<td>  				  
 				  {% if run.state == '0' %}
 				    in_queue
 				  {% elif run.state == '1' %}
@@ -32,9 +37,22 @@
 				  {% else %}
 					Error
 				  {% endif %} </td></tr>
-			<tr><td><b>Date/time</b></td><td>  {{ run.datetime.strftime('%H:%M:%S %d.%m.%Y')}}</td></tr>
+			<tr>
+				<td><b>Date/time</b></td>
+				<td>
+					{{ run.datetime.strftime('%H:%M:%S %d.%m.%Y')}}
+				</td>
+			</tr>
 			
-			<tr><td><b>Servers</b></td><td> {% if run.server.id %} {{ run.server.alias }} {% else %}-{% endif %}</td></tr>
+			<tr><td><b>Servers</b></td>
+				<td> 
+					{% if run.server.id %} 
+				     	{{ run.server.alias }} 
+				     {% else %}
+				     	-
+				     {% endif %}
+				</td>
+			</tr>
 		</table>
 		
 		<br>

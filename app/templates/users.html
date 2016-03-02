@@ -3,5 +3,27 @@
 {% block title %}Users{% endblock %}
 
 {% block body %}
-not implemented yet
+
+<div align="center">
+	<h2>Inactive users:</h2>
+
+	
+	<h2>Active users:</h2>
+	<table border="1">
+		<tr>
+			<td>#</td>
+			<td>Name</td>
+			<td>email</td>
+		</tr>
+		
+	{% for user in user_list %}
+		<tr>
+			<td>{{ user.id }}</td>
+			<td>{{ user.name }}</td>
+			<td>{{ user.email }}</td>
+		</tr>
+	{% endfor %}
+	</table>
+</div>
+
 {% endblock %}

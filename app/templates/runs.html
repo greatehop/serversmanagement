@@ -36,10 +36,10 @@
 				{% if run.server.id %}
 					{{ run.server.alias }}
 				{% else %}
-				-
+					-
 				{% endif %}
 			</td>
-			<td></td>
+			<td>{{ run.user.name }}</td>
 			
 			<td>{{ run.datetime.strftime('%H:%M:%S %d.%m.%Y') }}</td>
 		</tr>
