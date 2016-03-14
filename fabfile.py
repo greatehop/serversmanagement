@@ -1,21 +1,38 @@
-from fabric.api import env, run, prefix
+from fabric.api import env, run, prefix, task
 from fabric.context_managers import shell_env
 
-#env.roledefs = {
-#    'dev': ['jenkins@172.18.196.233']
-#}
+env.output_prefix = False
 
-#TODO: add deploy_mos script
-def install_tasks():
-    pass
-
-def deploy_mos():
-    """
-    with shell_env(DEPLOYMENT_NAME='test_fabric', ISO_PATH='/home/jenkins/scripts/iso/fuel-8.0-529-2016-02-05_13-56-13.iso'):
-        run('/home/jenkins/scripts/deploy_mos.sh')
-    """
-    #run('export LANG=en_EN; for i in {1..5}; do  ls -l /opt ; sleep 10; done')
+@task
+def verify_ssh():
     run('uptime')
-        
+
+@task
+def deploy_mos(**kwargs):
+    """
+    Task "deploy_mos" for deploy Fuel node
+    """
+
+    """
+    with shell_env(ISO_URL=kwargs['iso_url'], 
+                   KEEP_DAYS=kwargs['keep_days'],
+                   DEPLOYMENT_NAME=kwargs['deployment_name'],
+                   SLAVE_NODE_MEM=kwargs['slave_node_mem'],
+                   SLAVE_NODE_CPU=kwargs['slave_node_cpu'],
+                   NODE_COUNT=kwargs['node_count']):
+        run('/var/lib/jenkins/scripts/deploy_mos.sh')
+    """
+    run('for i in {1..20}; do echo ${i}; uptime; sleep 2; done')
+    
+@task
 def clean_mos():
-    pass
+    """
+    Task "clean_mos" for clean up Fuel node
+    """
+    
+    with shell_env(DEPLOYMENT_NAME=kwargs['deployment_name']):
+        run('VENV_PATH="/home/jenkins/scripts/venv-mos"')
+        run('source ${VENV_PATH}/bin/activate')
+        run('dos.py sync')
+        run('ENV_NAME=${DEPLOYMENT_NAME}')
+        run('dos.py erase ${ENV_NAME}')

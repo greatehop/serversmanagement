@@ -4,20 +4,23 @@
 
 {% block body %}
 
-not implemented yet
-{# 
 <div align="center">
-	<form action="/runs" method="post">
-	{{form.hidden_tag()}}
 	
+	<form action="/tasks/{{ task.id }}" method="post">
+		{{ form.hidden_tag() }}
+
 	    <p>
 			<b>Choose ENV:</b><br>
 			{{ form.deployment_name }}<br>
 		</p>
 	   
-	    <p><input type="submit" value="run"></p>
+	    <p><input type="submit" value="clean" class="btn"></p>
 	</form>
+	
+{% if form.errors %}
+    {{ form.errors }}
+{% endif %}
+
 </div>
-#}
 
 {% endblock %}

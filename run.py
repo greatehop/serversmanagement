@@ -1,6 +1,14 @@
 #!/usr/bin/python
 
-from app import app
+from app import app, socketio
+from core.tools import Scheduler
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    
+    """
+    # run daemon in background
+    Scheduler.run()
+    """
+    
+    # run web app
+    socketio.run(app, host='0.0.0.0', port=5000)

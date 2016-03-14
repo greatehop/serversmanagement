@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+	<a href="/servers">Servers</a> - server details
+{% endblock %}
+
+{% block body %}
+
+<div align="center">
+	
+	{% if server %}		
+		<form action="/servers/{{ server.id }}" method="post">
+			{{ form.hidden_tag() }}
+			
+			<p>
+				<b>IP/FQDN:</b><br>
+				{{ form.ip }}<br>
+				{% if form.ip.errors %}
+					<font color="red">{{ form.ip.errors | join(', ') }}</font>
+				{% endif %}
+			</p>
+			
+			<p>
+				<b>Alias:</b><br>
+				{{ form.alias }}<br>
+				{% if form.alias.errors %}
+					<font color="red">{{ form.alias.errors | join(', ') }}</font>
+				{% endif %}
+			</p>
+			
+			<p>
+				<b>Is active:</b><br>
+				{{ form.is_active }}<br>
+			</p>
+	
+			<p>
+				<b>Max tasks:</b><br>
+				{{ form.max_tasks }}<br>
+				{% if form.max_tasks.errors %}
+					<font color="red">{{ form.max_tasks.errors | join(', ') }}</font>
+				{% endif %}
+			</p>
+			
+			<p>
+				<b>Current number of tasks:</b>
+				{{ server.cur_tasks }}<br>
+			</p>
+			<p>
+				<input type="submit" value="edit" class="btn">
+			</p>
+		</form>
+	{% else %}
+	    Wrong server id!<br><br>
+	    <a href="/servers">server list</a>
+    {% endif %}
+    
+</div>	
+
+
+
+{% endblock %}

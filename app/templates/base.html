@@ -4,7 +4,27 @@
     <title>ServersManagement</title>
     <link href="/static/css/bootstrap.css" rel="stylesheet">
 	<link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+	<link rel="shortcut icon" href="/static/ico/favicon.ico">
+		
+	<script src="/static/js/jquery.min.js"></script>
 
+	<script type="text/javascript" charset="utf-8">  
+	    // loader
+		jQuery.ajaxSetup({
+		  beforeSend: function() {
+		     $('#loader').show();
+		  },
+		  complete: function(){
+		     $('#loader').hide();
+		  },
+		  success: function() {}
+		});
+		
+	</script>
+
+	{% block js %}
+	{% endblock %}
+	
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -14,13 +34,7 @@
         padding: 9px 0;
       }
     </style>
-    
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
-    <link rel="shortcut icon" href="/static/ico/favicon.ico">
-    
+ 
 </head>
 
 <body>
@@ -28,11 +42,7 @@
    <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"></a>
           <a class="brand" href="/about">ServersManagement</a>
           <div class="nav-collapse collapse">
             <p class="navbar-text pull-right">
@@ -66,10 +76,11 @@
               <li><a href="/index">Home</a></li>
               <li><a href="/tasks">Tasks</a></li>
               <li><a href="/runs">Runs</a></li>
-			  <li><a href="/users">Users</a></li>
-			  <li><a href="/servers">Servers</a></li>
 			  <li><a href="/stats">Stats</a></li>
-
+              {% if g.user.is_admin %}
+				  <li><a href="/users">Users</a></li>
+				  <li><a href="/servers">Servers</a></li>
+			  {% endif %}
             </ul>
           </div><!--/.well -->
         {% endif %}

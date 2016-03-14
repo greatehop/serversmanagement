@@ -9,26 +9,93 @@
 	<h1>Add server</h1>
 	<form action="/servers" method="post">
 	{{form.hidden_tag()}}
+		
 		<p>
 			<b>IP/FQDN:</b><br>
 			{{ form.ip(size=15) }}<br>
+			{% if form.ip.errors %}
+				 <font color="red">{{ form.ip.errors | join(', ') }}</font>
+			{% endif %}
 		</p>
 		
 		<p>
 			<b>Alias:</b><br>
 			{{ form.alias(size=120) }}<br>
+			{% if form.alias.errors %}
+				 <font color="red">{{ form.alias.errors | join(', ') }}</font>
+			{% endif %}
 		</p>
-		    <p><input type="submit" value="add"></p>
+		
+		<p>
+			<b>Is active:</b><br>
+			{{ form.is_active }}<br>
+		</p>
+
+		<p>
+			<b>max_tasks:</b><br>
+			{{ form.max_tasks }}<br>
+			{% if form.max_tasks.errors %}
+				{% for i in form.max_tasks.errors %}
+				 <font color="red">{{ i | join(', ') }}</font>
+				{% endfor %}
+			{% endif %}
+		</p>
+		
+		<p>
+			<input type="submit" value="add" class="btn">
+		</p>
 	</form>
 </div>
 
 <div align="center">
 	{% if server_list %}
 		<h1>Servers</h1>
+		<table border="1">
+			<tr align="center">
+				<td><b>#</b></td>
+				<td><b>IP</b></td>
+				<td><b>Alias</b></td>
+				<td><b>State</b></td>
+				<td><b>Max tasks</b></td>
+				<td><b>Current<br> number of tasks</b></td>
+			</tr>
 		{% for server in server_list %}
-			<p>{{ server.id }} {{ server.ip }} {{ server.alias }}<br>   
-			</p>
+			{% if loop.index is divisibleby(2) %}
+				<tr align="center">
+			{% else %}
+				<tr align="center" bgcolor="#D8D8D8">
+			{% endif %}
+				<td>
+					<a href="/servers/{{ server.id }}">#{{ server.id }}</a>
+				</td>
+
+				<td>
+					{{ server.ip }}
+				</td>
+
+				<td>
+					{{ server.alias }}
+				</td>
+
+				<td> 
+					{% if server.state %}
+						<img src="/static/ico/on.png"/>
+					{% else %}
+						<img src="/static/ico/off.png"/>
+					{% endif %}
+				</td>
+				
+				<td>
+					{{ server.max_tasks }}
+				</td>
+				
+				<td>
+					{{ server.cur_tasks }}
+				</td>
+			</tr>
+			
 		{% endfor %}
+		</table>
 	{% endif %}
 </div>
 

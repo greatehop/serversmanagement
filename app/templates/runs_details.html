@@ -1,72 +1,149 @@
 {% extends "base.html" %}
 
-{% block title %}<a href="/runs">Runs</a> - run details{% endblock %}
+{# TODO: need add up button #}
+
+{% block js %}
+                                                                                    
+	<script src="/static/js/socket.io.min.js"></script>
+	
+	<script type="text/javascript" charset="utf-8">
+    	$(document).ready(function(){
+            var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+            
+            socket.on('newline', function(msg) {
+                 $('#cmd_out').append('<br>' + $('<div/>').text(msg.data).html());
+            });
+		});
+	</script>
+		   
+{% endblock %}
+
+{% block title %}
+	<a href="/runs">Runs</a> - run details
+{% endblock %}
 
 {% block body %}
 
-<div align="center">
+
 	{% if run %}
-		Arguments
+		<div align="center"><b>Run's info</b><br></div>
+		<div align="center">
 		<table border="1">
-		   {% for key, value in run.attributes.items() %}
-			   <tr>
-			   		<td><b>{{ key }}</b></td>
-			      	<td>{{ value }}</td>
-			   </tr>
-		   {% endfor %}
-		</table>
 			
-		<br>
-		
-		<table border="1">
-			<tr>
+			<tr align="center">
+				<td><b>Run's ID</b></td>
+				<td> {{ run.id }} </td>
+			</tr>
+			
+			<tr align="center">
 				<td><b>Task</b></td>
 				<td> {{ run.task.taskname }} </td>
 			</tr>
-			<tr>
+			
+			<tr align="center">
 				<td><b>State</b></td>
 				<td>  				  
 				  {% if run.state == '0' %}
-				    in_queue
+				    <font color="orange">in_queue</font>
 				  {% elif run.state == '1' %}
 				    in_progress
 				  {% elif run.state == '2' %}
-					done
+					<font color="green">done</font>
 				  {% elif run.state == '3' %}
-				  	canceled
+				  	<font color="red">canceled</font>
 				  {% else %}
 					Error
-				  {% endif %} </td></tr>
-			<tr>
-				<td><b>Date/time</b></td>
-				<td>
-					{{ run.datetime.strftime('%H:%M:%S %d.%m.%Y')}}
-				</td>
+				  {% endif %} </td>
 			</tr>
 			
-			<tr><td><b>Servers</b></td>
+			<tr align="center">
+				<td><b>Servers</b></td>
 				<td> 
-					{% if run.server.id %} 
+					{% if run.server.id %}
 				     	{{ run.server.alias }} 
 				     {% else %}
 				     	-
 				     {% endif %}
 				</td>
 			</tr>
+			
+			<tr align="center">
+				<td><b>User</b></td>
+				<td> 
+					{{ run.user.name }}
+				</td>
+			</tr>
+			
+			<tr align="center">
+				<td><b>Start date/time</b></td>
+				<td>
+					{{ run.start_datetime.strftime('%H:%M:%S %d.%m.%Y')}}
+				</td>
+			</tr>
+			
+			<tr align="center">
+				<td><b>End date/time</b></td>
+				<td>
+					{% if run.end_datetime %}
+						{{ run.end_datetime.strftime('%H:%M:%S %d.%m.%Y') }}
+					{% else %}
+						-
+					{% endif %}
+				</td>
+			</tr>
+			
+			<tr align="center">
+				<td><b>Run's duration</b></td>
+				<td>
+					{% if run.end_datetime %}
+						{# TODO: fix format #}
+						{{ run.end_datetime-run.start_datetime }}
+					{% else %}
+						-
+					{% endif %}
+				</td>
+			</tr>
 		</table>
 		
 		<br>
 		
-		<b>cmd_out</b><br>
-		{{ run.cmd_out | safe }}
-		 
+		
+		<div align="center"><b>Task's arguments</b><br></div>
+		{% if run.args %}
+		<table border="1">
+		   {% for key, value in run.args.items() %}
+				<tr>
+					<td><b>{{ key }}</b></td>
+			      	<td align="center">{{ value }}</td>
+			   </tr>
+		   {% endfor %}
+		</table>
+		{% else %}
+			None
+		{% endif %}
+		</div>
+
+		<br>
+		
+		<div align="center"><b>Task's output</b><br></div>
+		
+		{% if run.cmd_out %}
+			<div align="left">
+				{{ run.cmd_out | safe }}
+			</div>
+		{% else %}
+			{% if run.state == '1' %}
+				<div align="center" id='loader'><img src="/static/ico/loader.gif"/></div>
+			{% endif %}
+				<div align="left" id="cmd_out"></div>
+	    {% endif %}
+
 	{% else %}
-	    Wrong run id!<br><br>
-	    <a href="/runs">run list</a> 
+		<div class="center">    		 
+		
+		    Wrong run id!<br><br>
+		    <a href="/runs">run list</a>
+		</div> 
     {% endif %}
-	
-	
-	
-</div>
 
 {% endblock %}

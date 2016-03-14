@@ -1,8 +1,18 @@
 DESCRIPTION: 
 
-ServersManagment - minijenkins, allows to run scripts on remote servers via WebUI 
+ServersManagement - mini-jenkins, allows to run scripts on remote servers via WebUI. 
+
+ACRH:
+
+WebUI - Flask with plugins
+DB - SQLAlchemy - MySQL
+remote commands executor - fabric
 
 INSTALL:
+- create mysql user/grants 
+create database <db_name>;
+GRANT ALL PRIVILEGES ON <db_name>.* TO '<db_user>'@'<host>' IDENTIFIED BY '<password>' WITH GRANT OPTION;
+flush privileges;
 
 - add user and user on remote servers
 
@@ -10,53 +20,18 @@ INSTALL:
 ssh-keygen
 
 - copy ssh pub keys to servers
-ssh-copy-id <user@server>
+ssh-copy-id <user>@<server>
 
-- venv
+- setup software 
+git clone https://github.com/greatehop/serversmanagement
+cd serversmanagement
+virtualenv venv
+. venv/bin/activate
+pip install -r requirements.txt
 
-- edit config.py
+- edit settings.py
 
-- run task's script 
-needs for configurate remote servers
-https://docs.fuel-infra.org/fuel-dev/devops.html  
+- run configurator for "(deploy/clean)_mos" task's script
 
-- run daemon?? 
-supervisor
-
-- wsgi
-
-
-REQEREMENTS:
-
-"""
-fabric
-Flask
-Flask-sqlalchemy
-Flask-WTF
-Flask-OpenID
-Flask-Login
-Flask-SocketIO
-
-flask_ext_migrate
-python-migrate
-sqlalchemy-migrate
-"""
-
-#TODO: fix it!
-How to add new task:
-
-- create fabric file with task
-- add task to db (example in create.db)
-- create logic in app/view.py
-- create forms in app/forms.py
-- create template in app/tasks_<task_name>.html
-
-#TODO:
-- add db scheme
-- project scheme
-
-CONTACTS:
-
-Alexander Gubanov
-skype: joinordie
-email: ogubanov@mirantis.com
+ 
+- run app

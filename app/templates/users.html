@@ -5,25 +5,35 @@
 {% block body %}
 
 <div align="center">
-	<h2>Inactive users:</h2>
-
 	
-	<h2>Active users:</h2>
-	<table border="1">
-		<tr>
-			<td>#</td>
-			<td>Name</td>
-			<td>email</td>
-		</tr>
+	{% if user_list %}
 		
-	{% for user in user_list %}
-		<tr>
-			<td>{{ user.id }}</td>
-			<td>{{ user.name }}</td>
-			<td>{{ user.email }}</td>
-		</tr>
-	{% endfor %}
-	</table>
+			<table border="1">
+				<tr align="center">
+					<td><b>#</b></td>
+					<td><b>Name</b></td>
+					<td><b>email</b></td>
+					<td><b>Is active</b></td>
+					<td><b>Is admin</b></td>
+				</tr>
+	
+			{% for user in user_list %}
+				{% if loop.index is divisibleby(2) %}
+					<tr align="center">
+				{% else %}
+					<tr align="center" bgcolor="#D8D8D8">
+				{% endif %}
+					<td><a href="/users/{{ user.id }}">#{{ user.id }}</a></td>
+					<td>{{ user.name }}</td>
+					<td>{{ user.email }}</td>
+					<td>{{ user.is_active }}</td>
+					<td>{{ user.is_admin }}</td>
+				</tr>
+			{% endfor %}
+						
+			</table>
+
+	{% endif %}
 </div>
 
 {% endblock %}

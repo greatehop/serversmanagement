@@ -4,18 +4,12 @@
 
 {% block body %}
 
-{% if onload_server_list %}
-<h4>on_load servers:</h4>
-	{% for server in onload_server_list %}
-		{{ server.ip }} {{ server.alias }} <br>
-	{% endfor %}
-{% endif %}
-
-{% if onload_server_list %}
+not implemented yet
+{# }{% if empty_server_list %} #}
 <h4>empty servers:</h4>
 	{% for server in empty_server_list %}
 		{{ server.ip }} {{ server.alias }} <br>
 	{% endfor %}
-{% endif %}
+{# {% endif %} #}
 
 {% endblock %}

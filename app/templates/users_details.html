@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}<a href="/users">Users</a>{% endblock %}
+
+{% block body %}
+
+<div align="center">
+
+	{% if user %}
+		<form action="/users/{{ user.id }}" method="post">
+		{{ form.hidden_tag() }}
+			<table border=1>	
+				<tr>
+					<td><b>Name:</b></td>
+					<td>{{ user.name }}</td>
+				</tr>
+				
+				<tr>
+					<td><b>Email:</b></td>
+					<td>{{ user.email }}</td>
+				</tr>
+				
+				<tr>
+					<td><b>Is active:</b></td>
+					<td>{{ form.is_active }}</td>
+				</tr>
+				
+				<tr>
+					<td><b>Is admin:</b></td>
+					<td>{{ form.is_admin }}</td>
+					
+				</tr>
+			</table>
+			<br><br>
+			<p><input type="submit" value="edit" class="btn"></p>
+			
+		</form>
+	{% else %}
+		<div class="center">    		 
+		
+		    Wrong user id!<br><br>
+		    <a href="/users">user list</a>
+		</div> 
+	{% endif %}
+</div>
+
+{% endblock %}

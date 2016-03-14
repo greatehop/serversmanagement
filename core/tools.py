@@ -1,72 +1,128 @@
-from Queue import Queue, Empty
+import settings
+from app import models, db, socketio
+
 from subprocess import Popen, PIPE
 from threading import Thread
 from time import sleep
 import random
+import datetime
+from flask.ext.socketio import SocketIO, emit
 
-import config
-from app import models, db
-
-#TODO: fix it!
-class NonBlockingStreamReader:
-
-    def __init__(self, stream):
-        self._s = stream
-        self._q = Queue()
-
-        def _populateQueue(stream, queue):
+class ReadWriteStream(object):
+    """
+    console output reader/writer
+    """
+    
+    def __init__(self, stream, run_id):
+        self.stream = stream
+        self.data = []
+        
+        def rw_output(stream, data):
             while True:
                 line = stream.readline()
                 if line:
-                    queue.put(line)
+                    # send line to server
+                    socketio.emit('newline', 
+                                  {'data': line },
+                                  namespace='/test') 
+                    
+                    data.append(line)
+                else:
+                    # update run - set cmd_out, run_state and end_datetime
+                    # "convert" console nextline (\n) to html nextline (<br>)
+                    cmd_out = '<br>'.join([i for i in data])
+                    run_state = settings.RUN_STATE['done']
+                    end_datetime = datetime.datetime.utcnow()
+                    db.session.query(models.Run).filter_by(id=run_id).update(
+                        {'state': run_state,
+                         'end_datetime': end_datetime,
+                         'cmd_out': cmd_out})
+                    db.session.commit()
+                    break
+        
+        self.t = Thread(target=rw_output, args =(self.stream, self.data))
+        self.t.daemon = True
+        self.t.start()
 
-        self._t = Thread(target = _populateQueue, args = (self._s, self._q))
-        self._t.daemon = True
-        self._t.start()
-
-    def readline(self, timeout = None):
-        try:
-            return self._q.get(block = timeout is not None, timeout = timeout)
-        except Empty:
-            return None
-
+class Scheduler(object):
+    """
+    daemon for execute runs in queue
+    """ 
+    
+    #TODO: add interupt handler
+    #TODO: add delete env by keep days argument
+        
+    def _daemon():
+        state_in_q = settings.RUN_STATE['in_queue']
+        while True:
+            runs_in_queue = models.Run.query.order_by(
+                models.Run.id).filter_by(state=state_in_q).all()
+            if runs_in_queue:
+                for run in runs_in_queue:
+                    # get server and execute run
+                    server = get_server()
+                    if server:
+                        task = models.Task.query.get(run.task_id)
+                        run_task(task, server, run)
+                    else:
+                        break
+            sleep(settings.DAEMON_TIMEOUT)
+    
+    def run(self):
+        main = Thread(target=self._daemon())
+        main.daemon = True
+        main.start()
+        
 def get_server():
     """
-    random get not loaded and not disabled server or None
+    get random and not loaded server (based on max/cur tasks in db) or None 
+    and update server state
     """
-    #TODO: get env_per_server variable
+    
+    #TODO: add lock
+    server_state = settings.SERVER_STATE['on']
+    server_list = models.Server.query.filter_by(state=server_state).all()
+    tmp_list = [{'id': s, 'weight': s.max_tasks-s.cur_tasks} 
+                for s in server_list if s.max_tasks-s.cur_tasks]
+    random.shuffle(tmp_list)
+    try:
+        server = max(tmp_list, key=lambda i: i['weight'])['id']
+        # increase current number of tasks
+        db.session.query(models.Server).filter_by(id=server.id).update(
+            {'cur_tasks': models.Server.cur_tasks+1})
+        db.session.commit()
+        return server
+    except ValueError:
+        return None
 
-    server_list = models.Server.query.filter_by(state=config.SERVER_STATE['on']).all()
-    if server_list:
-        return random.choice(server_list)
-    return None
-
-def run_task(task_name, task_file, task_server):
+def run_task(task, server, run):
+    """
+    execute task (fabric file) and save console output in background
+    
+    example: 
+    fab --fabfile <fabfile> -u <user> 
+        -H <ip> <taskname>[:key1=val1,keyN=valN]
+    """
+    
+    # update run - set "in_progress" and "server_id"
+    run_state = settings.RUN_STATE['in_progress']
+    db.session.query(models.Run).filter_by(id=run.id).update(
+        {'state': run_state, 'server_id': server.id})
+    db.session.commit()
+    
     #TODO: use fabric API?
-    #TODO: add task cancel (--abort-on-prompts=True)
+    cmd = 'fab --fabfile=%s -u %s -H %s %s' % (
+        task.taskfile, settings.SSH_USER, server.ip, task.taskname)
     
-    #example: fab deploy_mos --fabfile ./fabfile.py --host 172.18.196.233 -u jenkins
-    cmd = 'fab %s --fabfile=%s -u %s -H %s' % (task_name, task_file, config.SSH_USER, task_server)
-    p = Popen(cmd, stdin = PIPE, stdout = PIPE, stderr = PIPE, shell = True)
-    #TODO: save pid
-    #+ output http://docs.fabfile.org/en/latest/usage/output_controls.html
+    # add arguments for task
+    if run.args:
+        vars = ','.join(['%s="%s"' % (key, val) 
+                         for key, val in run.args.iteritems()])
+        cmd += ':%s' % vars
     
-    #TODO: update run state
-    nbsr = NonBlockingStreamReader(p.stdout)
-  
-    #TODO: fix timeout
-    cmd_out = nbsr.readline(1)
-    #print cmd_out
-    return cmd_out
-
-#TODO: need daemon
-def scheduler():
-    """
-    get run_id fitered by lower id
-    """ 
-    #TODO: delete env by keep_days parameter
-    runs_in_queue = models.Run.query.filter_by(config.RUN_STATE['in_queue'])
+    # run command and write output to web/db in background
+    process = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
+    ReadWriteStream(process.stdout, run.id)
     
-    time.sleep(config.SCHEDULER_TIMEOUT)
-    pass
-     
+    #TODO: add cancel
+    return process
