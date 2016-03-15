@@ -2,8 +2,10 @@ import settings
 
 from flask.ext.wtf import Form
 from app import models
-from wtforms import TextField, SelectField, IntegerField, BooleanField, HiddenField
-from wtforms.validators import Required, IPAddress, NumberRange, ValidationError
+from wtforms import TextField, SelectField, IntegerField, \
+                    BooleanField, HiddenField
+from wtforms.validators import Required, IPAddress, NumberRange, \
+                               ValidationError
 
 
 class UniqueValidator(object):
@@ -74,6 +76,6 @@ class TaskDeployMOSForm(Form):
                              validators=[NumberRange(min=1)])
 
 class TaskCleanMOSForm(Form):
-    deployment_name = SelectField('deployment_name')
+    deployment_name = SelectField('deployment_name', coerce=int)
 
 #TODO: taskform for admin user ?

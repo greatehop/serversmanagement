@@ -23,7 +23,8 @@ MAX_TASKS = 1
 NODE_COUNT = 6
 KEEP_DAYS = 1
 
-# admin list (needs only for first log in)
+# admin list 
+#(needs only for first log in, manage by user -> is_admin)
 ADMINS = ['ogubanov@mirantis.com']
 
 USER_ROLE = {'user': 0, 'admin': 1}
@@ -31,7 +32,8 @@ USER_ROLE = {'user': 0, 'admin': 1}
 USER_STATE = {'off': 0, 'on': 1}
 SERVER_STATE = {'off': 0, 'on': 1}
 TASK_STATE = {'off': 0, 'on': 1}
-RUN_STATE = {'in_queue': 0, 'in_progress': 1, 'done': 2, 'canceled': 3}
+RUN_STATE = {'in_queue': 0, 'in_progress': 1, 'done': 2, 
+             'canceled': 3, 'removed': 4}
 
 OPENID = {'launchpad':
           {'url': 'https://launchpad.net/people/+me', 

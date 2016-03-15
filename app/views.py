@@ -17,7 +17,7 @@ from sqlalchemy import desc
 def tasks(task_id=None):
     #TODO: hide task(s) if it is disabled (show for admin's users)
 
-    #TODO: refactor it as plugins
+    #TODO: refactor tasks as plugins
 
     #TODO: add "run again with the same arguments"
 
@@ -54,34 +54,47 @@ def tasks(task_id=None):
                 return redirect('/runs')
             return render_template('tasks_deploy_mos.html',
                                    task=task, form=form)
-
+        
+        #TODO: need fix
         elif task.name == 'clean_mos':
-            #TODO: fix only alive env
-
-            #TODO: fix hide if no envs
-
+            #TODO: show all envs for admin
             form = forms.TaskCleanMOSForm()
-            # generate alive env for current user
+            
+            # generate alive envs (state "done") for current user
+            # and all alive envs for admin
+            state_done = settings.RUN_STATE['done'] 
             run_list = models.Run.query.order_by(
-                    desc(models.Run.id)).filter_by(user_id=g.user.id).all()
-
-            #TODO: fix it
-            form.deployment_name.choices = [(run.id, run.args) 
-                                            for run in run_list]
-            if form.validate_on_submit():
-                # create run
-                run = models.Run(
-                    user_id=g.user.id, task_id=task_id, args={},
-                    start_datetime=datetime.datetime.utcnow())
-                db.session.add(run)
-                db.session.commit()
-
-                # execute run
-                #tools.run_task(task, server, run)
-                return redirect('/runs')
-
-            return render_template('tasks_clean_mos.html',
-                                   task=task, form=form)
+                    desc(models.Run.id)).filter_by(
+                    user_id=g.user.id, state=state_done).all()
+            
+            if run_list:
+                form.deployment_name.choices = [
+                    (run.id, run.args['deployment_name']) for run in run_list]
+                if form.validate_on_submit():
+                    # get server from existing run
+                    run_id = int(form.deployment_name.data)
+                    exist_run = [i for i in run_list if i.id == run_id][0]
+                    server = models.Server.query.get(exist_run.server_id)
+                    
+                    # create run
+                    run = models.Run(
+                        user_id=g.user.id, task_id=task_id, args={},
+                        start_datetime=datetime.datetime.utcnow(),
+                        )
+                    db.session.add(run)
+                    db.session.commit()
+    
+                    # execute run
+                    tools.run_task(task, server, run)
+                    
+                    #TODO: mark existing run as removed + server free
+                    #exist_run
+                                        
+                    return redirect('/runs')
+            else:
+                form = None
+        return render_template('tasks_clean_mos.html',
+                                task=task, form=form)
     else:
         return render_template('tasks.html', task_list=task_list)
 
@@ -151,8 +164,7 @@ def servers(server_id=None):
         else:
             server_list = models.Server.query.all()
             return render_template('servers.html', 
-                                   server_list=server_list,
-                                   form=form)
+                                   server_list=server_list, form=form)
 
 @app.route('/about', strict_slashes=False)
 def about():
@@ -175,6 +187,7 @@ def stats():
 @login_required
 def users(user_id=None):
     #TODO: change way to log in
+    
     #TODO: add info about admin user in setting
 
     if not g.user.is_admin:
@@ -187,6 +200,7 @@ def users(user_id=None):
                 {'state': form.is_active.data,
                  'role': form.is_admin.data})
             db.session.commit()
+            
             return redirect('/users')
         else:
             # show user setting

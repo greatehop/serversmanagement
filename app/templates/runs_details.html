@@ -10,7 +10,7 @@
     	$(document).ready(function(){
             var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
             
-            socket.on('newline', function(msg) {
+            socket.on('line', function(msg) {
                  $('#cmd_out').append('<br>' + $('<div/>').text(msg.data).html());
             });
 		});

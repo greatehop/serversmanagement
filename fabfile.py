@@ -29,10 +29,13 @@ def clean_mos():
     """
     Task "clean_mos" for clean up Fuel node
     """
-
+    
     with shell_env(DEPLOYMENT_NAME=kwargs['deployment_name']):
+        """
         run('VENV_PATH="/home/jenkins/scripts/venv-mos"')
         run('source ${VENV_PATH}/bin/activate')
         run('dos.py sync')
         run('ENV_NAME=${DEPLOYMENT_NAME}')
         run('dos.py erase ${ENV_NAME}')
+        """
+        run('echo ${DEPLOYMENT_NAME}')

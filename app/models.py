@@ -59,7 +59,7 @@ class Task(db.Model):
     taskfile = db.Column(db.String(15))
     taskname = db.Column(db.String(15), unique=True)
     state = db.Column(db.SmallInteger, default=settings.TASK_STATE['on'])
-    runs = db.relationship('Run', backref = 'task', lazy = 'dynamic')
+    runs = db.relationship('Run', backref='task', lazy='dynamic')
 
     def __repr__(self):
         return '<Task %r>' % (self.name)

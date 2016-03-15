@@ -22,15 +22,13 @@ class ReadWriteStream(object):
                 line = stream.readline()
                 if line:
                     # send line to server
-                    socketio.emit('newline', 
-                                  {'data': line },
-                                  namespace='/test') 
+                    socketio.emit('line', {'data': line }, namespace='/test') 
 
                     data.append(line)
                 else:
-                    # update run - set cmd_out, run_state and end_datetime
                     # "convert" console nextline (\n) to html nextline (<br>)
                     cmd_out = '<br>'.join([i for i in data])
+                    # update run - set cmd_out, run_state and end_datetime
                     run_state = settings.RUN_STATE['done']
                     end_datetime = datetime.datetime.utcnow()
                     db.session.query(models.Run).filter_by(id=run_id).update(
