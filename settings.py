@@ -24,7 +24,7 @@ NODE_COUNT = 6
 KEEP_DAYS = 1
 
 # admin list 
-#(needs only for first log in, manage by user -> is_admin)
+# (needs only for first log in, manage by user -> is_admin)
 ADMINS = ['ogubanov@mirantis.com']
 
 USER_ROLE = {'user': 0, 'admin': 1}

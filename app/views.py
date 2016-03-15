@@ -32,7 +32,7 @@ def tasks(task_id=None):
             form = forms.TaskDeployMOSForm()
             if form.validate_on_submit():
 
-                # create run in db
+                # save run to db
                 run = models.Run(
                     user_id=g.user.id,
                     task_id=task_id,
@@ -55,17 +55,16 @@ def tasks(task_id=None):
             return render_template('tasks_deploy_mos.html',
                                    task=task, form=form)
         
-        #TODO: need fix
         elif task.name == 'clean_mos':
             #TODO: show all envs for admin
             form = forms.TaskCleanMOSForm()
             
             # generate alive envs (state "done") for current user
             # and all alive envs for admin
-            state_done = settings.RUN_STATE['done'] 
+            state_done = settings.RUN_STATE['done']
             run_list = models.Run.query.order_by(
                     desc(models.Run.id)).filter_by(
-                    user_id=g.user.id, state=state_done).all()
+                    user_id=g.user.id, state=state_done, task_id=1).all()
             
             if run_list:
                 form.deployment_name.choices = [
@@ -76,20 +75,29 @@ def tasks(task_id=None):
                     exist_run = [i for i in run_list if i.id == run_id][0]
                     server = models.Server.query.get(exist_run.server_id)
                     
-                    # create run
+                    # save run to db
                     run = models.Run(
-                        user_id=g.user.id, task_id=task_id, args={},
-                        start_datetime=datetime.datetime.utcnow(),
-                        )
+                        user_id=g.user.id, task_id=task_id, 
+                        args={'deployment_name': form.deployment_name.data},
+                        start_datetime=datetime.datetime.utcnow())
                     db.session.add(run)
                     db.session.commit()
     
                     # execute run
                     tools.run_task(task, server, run)
                     
-                    #TODO: mark existing run as removed + server free
-                    #exist_run
-                                        
+                    # mark existing run as removed 
+                    db.session.query(models.Run).filter_by(
+                        id=exist_run.id).update(
+                        {'state': settings.RUN_STATE['removed']})
+                    db.session.commit()
+
+                    # decrease current number of tasks
+                    db.session.query(models.Server).filter_by(
+                        id=exist_run.server_id).update(
+                        {'cur_tasks': models.Server.cur_tasks-1})
+                    db.session.commit()
+                    
                     return redirect('/runs')
             else:
                 form = None

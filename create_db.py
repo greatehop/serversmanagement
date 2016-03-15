@@ -6,20 +6,11 @@ import os.path
 
 db.create_all()
 
-"""
-from config import SQLALCHEMY_DATABASE_URI
-from config import SQLALCHEMY_MIGRATE_REPO
-
-if not os.path.exists(SQLALCHEMY_MIGRATE_REPO):
-    api.create(SQLALCHEMY_MIGRATE_REPO, 'database repository')
-    api.version_control(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
-else:
-    api.version_control(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO, api.version(SQLALCHEMY_MIGRATE_REPO))
-"""
-
 # create tasks
-task = models.Task(name='deploy_mos', desc='', taskfile='./fabfile.py', taskname='deploy_mos')
-task2 = models.Task(name='clean_mos', desc='', taskfile='./fabfile.py', taskname='clean_mos')
-db.session.add(task)
-db.session.add(task2)
+task_deploy_mos = models.Task(name='deploy_mos', desc='', 
+                              taskfile='./app/fabfile.py', taskname='deploy_mos')
+task_clean_mos = models.Task(name='clean_mos', desc='',
+                              taskfile='./app/fabfile.py', taskname='clean_mos')
+db.session.add(task_deploy_mos)
+db.session.add(task_clean_mos)
 db.session.commit()

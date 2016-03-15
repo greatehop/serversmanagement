@@ -58,8 +58,10 @@ pip install -r requirements.txt
 - edit settings.py
 
 - run configurator for "(deploy/clean)_mos" task's script
+TODO: need add details
 
 - run app
+TODO: need add details
 
 TODO:
 

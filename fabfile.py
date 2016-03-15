@@ -25,7 +25,7 @@ def deploy_mos(**kwargs):
     run('for i in {1..20}; do echo ${i}; uptime; sleep 2; done')
 
 @task
-def clean_mos():
+def clean_mos(**kwargs):
     """
     Task "clean_mos" for clean up Fuel node
     """

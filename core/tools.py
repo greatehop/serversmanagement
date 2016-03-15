@@ -21,7 +21,7 @@ class ReadWriteStream(object):
             while True:
                 line = stream.readline()
                 if line:
-                    # send line to server
+                    # send line to client
                     socketio.emit('line', {'data': line }, namespace='/test') 
 
                     data.append(line)
