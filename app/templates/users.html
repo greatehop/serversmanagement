@@ -5,9 +5,8 @@
 {% block body %}
 
 <div align="center">
-	
+
 	{% if user_list %}
-		
 			<table border="1">
 				<tr align="center">
 					<td><b>#</b></td>
@@ -16,7 +15,6 @@
 					<td><b>Is active</b></td>
 					<td><b>Is admin</b></td>
 				</tr>
-	
 			{% for user in user_list %}
 				{% if loop.index is divisibleby(2) %}
 					<tr align="center">
@@ -30,9 +28,7 @@
 					<td>{{ user.is_admin }}</td>
 				</tr>
 			{% endfor %}
-						
 			</table>
-
 	{% endif %}
 </div>
 

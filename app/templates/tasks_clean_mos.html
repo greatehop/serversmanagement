@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}<a href="/tasks">Tasks</a>  - {{ task.taskname }} {% endblock %}
+{% block title %}<a href="/tasks">Tasks</a> - {{ task.taskname }} {% endblock %}
 
 {% block body %}
 
 <div align="center">
-	
+
 	<form action="/tasks/{{ task.id }}" method="post">
 		{{ form.hidden_tag() }}
 
@@ -13,10 +13,10 @@
 			<b>Choose ENV:</b><br>
 			{{ form.deployment_name }}<br>
 		</p>
-	   
+
 	    <p><input type="submit" value="clean" class="btn"></p>
 	</form>
-	
+
 {% if form.errors %}
     {{ form.errors }}
 {% endif %}

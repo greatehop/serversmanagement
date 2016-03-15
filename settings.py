@@ -33,6 +33,6 @@ SERVER_STATE = {'off': 0, 'on': 1}
 TASK_STATE = {'off': 0, 'on': 1}
 RUN_STATE = {'in_queue': 0, 'in_progress': 1, 'done': 2, 'canceled': 3}
 
-OPENID = {'launchpad': 
+OPENID = {'launchpad':
           {'url': 'https://launchpad.net/people/+me', 
                   'openid': 'https://login.launchpad.net/+openid'}}

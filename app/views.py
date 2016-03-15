@@ -9,22 +9,22 @@ from flask.ext.login import login_user, logout_user, \
                             current_user, login_required
 from sqlalchemy import desc
 
-    
+
 @app.route('/tasks', strict_slashes=False)
 @app.route('/tasks/<int:task_id>',
            methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def tasks(task_id=None):
     #TODO: hide task(s) if it is disabled (show for admin's users)
-    
+
     #TODO: refactor it as plugins
-        
+
     #TODO: add "run again with the same arguments"
-    
+
     task_list = models.Task.query.all()
     if task_id is not None:
         task = models.Task.query.get(task_id)
-        
+
         if not task:
             return render_template('tasks.html', task_list=task_list)
 
@@ -50,21 +50,21 @@ def tasks(task_id=None):
                 server = tools.get_server()
                 if server:
                     tools.run_task(task, server, run)
-                    
+
                 return redirect('/runs')
-            return render_template('tasks_deploy_mos.html', 
+            return render_template('tasks_deploy_mos.html',
                                    task=task, form=form)
 
         elif task.name == 'clean_mos':
             #TODO: fix only alive env
-            
+
             #TODO: fix hide if no envs
-            
+
             form = forms.TaskCleanMOSForm()
             # generate alive env for current user
             run_list = models.Run.query.order_by(
                     desc(models.Run.id)).filter_by(user_id=g.user.id).all()
-            
+
             #TODO: fix it
             form.deployment_name.choices = [(run.id, run.args) 
                                             for run in run_list]
@@ -75,11 +75,11 @@ def tasks(task_id=None):
                     start_datetime=datetime.datetime.utcnow())
                 db.session.add(run)
                 db.session.commit()
-                
+
                 # execute run
                 #tools.run_task(task, server, run)
                 return redirect('/runs')
-            
+
             return render_template('tasks_clean_mos.html',
                                    task=task, form=form)
     else:
@@ -96,7 +96,7 @@ def runs(run_id=None):
 
     if run_id is not None:
         run = models.Run.query.get(run_id)
-        
+
         #TODO: share run/task
         #TODO: if run in q - update start_datetime
         return render_template('runs_details.html', run=run)
@@ -108,6 +108,11 @@ def runs(run_id=None):
            methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def servers(server_id=None):
+    #TODO: add delete
+    #TODO: block delete/disable if server has taks/runs
+    #Server.query.filter_by(id=server_id).delete()
+
+    #TODO: add test ssh connection
     if not g.user.is_admin:
         return render_template('404.html')
     form = forms.ServerForm()
@@ -120,10 +125,6 @@ def servers(server_id=None):
                 'state': form.is_active.data,
                 'max_tasks': form.max_tasks.data})
             db.session.commit()
-            
-            #TODO: add delete
-            #TODO: block delete/disable if server has taks/runs
-            #Server.query.filter_by(id=server_id).delete()
             return redirect('/servers')
         else:
             # show server settings
@@ -165,17 +166,17 @@ def stats():
     state_on = settings.SERVER_STATE['on']
     empty_server_list = models.Server.query.filter_by(
         state=state_on, cur_tasks=0).all()
-    return render_template('stats.html', 
+    return render_template('stats.html',
                            empty_server_list=empty_server_list)
 
 @app.route('/users', strict_slashes=False)
-@app.route('/users/<int:user_id>', 
+@app.route('/users/<int:user_id>',
            methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def users(user_id=None):
     #TODO: change way to log in
     #TODO: add info about admin user in setting
-    
+
     if not g.user.is_admin:
         return render_template('404.html')
     form = forms.UserForm()
@@ -218,7 +219,7 @@ def login():
     form = forms.LoginForm()
     if form.validate_on_submit():
         session['remember_me'] = True
-        return oid.try_login(settings.OPENID['launchpad']['openid'], 
+        return oid.try_login(settings.OPENID['launchpad']['openid'],
                              ask_for=['nickname', 'email'])
     return render_template('login.html', form=form,
                            providers=settings.OPENID['launchpad']['url'])
@@ -235,7 +236,7 @@ def load_user(id):
 @app.before_request
 def before_request():
     g.user = current_user
-    
+
 @oid.after_login
 def after_login(resp):
     if resp.email is None or resp.email == "":

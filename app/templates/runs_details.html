@@ -3,7 +3,7 @@
 {# TODO: need add up button #}
 
 {% block js %}
-                                                                                    
+
 	<script src="/static/js/socket.io.min.js"></script>
 	
 	<script type="text/javascript" charset="utf-8">
@@ -15,7 +15,7 @@
             });
 		});
 	</script>
-		   
+
 {% endblock %}
 
 {% block title %}
@@ -139,11 +139,10 @@
 	    {% endif %}
 
 	{% else %}
-		<div class="center">    		 
-		
+		<div class="center">
 		    Wrong run id!<br><br>
 		    <a href="/runs">run list</a>
-		</div> 
+		</div>
     {% endif %}
 
 {% endblock %}

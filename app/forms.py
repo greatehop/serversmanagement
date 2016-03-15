@@ -10,6 +10,7 @@ class UniqueValidator(object):
     """
     validator that checks field uniqueness
     """
+
     def __init__(self, model, field, message=None):
         self.model = model
         self.field = field
@@ -25,16 +26,16 @@ class UniqueValidator(object):
             id = None
         if existing and (id is None or id != existing.id):
             raise ValidationError(self.message)
-        
+
 class LoginForm(Form): pass
-          
+
 class ServerForm(Form):
     id = HiddenField('id')
-    ip = TextField('ip', 
+    ip = TextField('ip',
         validators=[IPAddress(), UniqueValidator(
             models.Server, models.Server.ip,
             'There is already server with that IP')])
-    alias = TextField('alias', 
+    alias = TextField('alias',
         validators=[Required(), UniqueValidator(
             models.Server, models.Server.alias,
             'There is already server with that alias')])
@@ -42,7 +43,7 @@ class ServerForm(Form):
     max_tasks = IntegerField('max_tasks',
                              default=settings.MAX_TASKS,
                              validators=[NumberRange(min=1)])
-    
+
 class UserForm(Form):
     is_admin = BooleanField('is_admin', default=False)
     is_active = BooleanField('is_active', default=True)
@@ -54,7 +55,7 @@ class TaskDeployMOSForm(Form):
     node_count = IntegerField('node_count',
                               default=settings.NODE_COUNT,
                               validators=[NumberRange(min=1)])
-                              
+
     slave_node_cpu = SelectField('slave_node_cpu',
                                  validators=[],
                                  choices=[('1', '1'),

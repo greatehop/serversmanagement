@@ -24,8 +24,6 @@ elif async_mode == 'gevent':
     from gevent import monkey
 
 import os
-from config import basedir
-
 from flask import Flask
 from flask.ext.login import LoginManager
 from flask.ext.openid import OpenID
@@ -39,13 +37,6 @@ db = SQLAlchemy(app)
 lm = LoginManager()
 lm.init_app(app)
 lm.login_view = 'login'
-oid = OpenID(app, os.path.join(basedir, 'tmp'))
+oid = OpenID(app, os.path.realpath('tmp'))
 
 from app import views, models
-
-
-
-
-
-
-

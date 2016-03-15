@@ -14,7 +14,7 @@
 				<font color="red">{{ form.deployment_name.errors | join(', ') }}</font>
 			{% endif %}
 		</p>
-	   
+
 		<p>
 			<b>URL(file/ISO/torrent):</b><br>
 			<a href="http://product-jenkins-reports.vm.mirantis.net/">MOS ISOs</a><br>
@@ -23,7 +23,7 @@
 				<font color="red">{{ form.iso_url.errors | join(', ') }}</font>
 			{% endif %}
 		</p>
-	   
+
 		<p>
 			<b>Count of cluster nodes:</b><br>
 			(including Fuel node)<br>
@@ -32,12 +32,12 @@
 				<font color="red">{{ form.node_count.errors | join(', ') }}</font>
 			{% endif %}
 		</p>
-		
+
 		<p>
 			<b>Number of CPU on slave nodes:</b><br>
 			{{ form.slave_node_cpu }}<br>
 		</p>
-	
+
 		<p>
 			<b>Amount of memory on slave node:</b><br>
 			{{ form.slave_node_mem }}<br>
@@ -50,7 +50,7 @@
 				<font color="red">{{ form.keep_days.errors | join(', ') }}</font>
 			{% endif %}
 		</p>
-	   
+
 	    <p><input class="btn" type="submit" value="run"></p>
 	</form>
 </div>

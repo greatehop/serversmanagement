@@ -9,7 +9,7 @@
 	{% if user %}
 		<form action="/users/{{ user.id }}" method="post">
 		{{ form.hidden_tag() }}
-			<table border=1>	
+			<table border=1>
 				<tr>
 					<td><b>Name:</b></td>
 					<td>{{ user.name }}</td>
@@ -33,11 +33,11 @@
 			</table>
 			<br><br>
 			<p><input type="submit" value="edit" class="btn"></p>
-			
+
 		</form>
 	{% else %}
-		<div class="center">    		 
-		
+		<div class="center">
+
 		    Wrong user id!<br><br>
 		    <a href="/users">user list</a>
 		</div> 

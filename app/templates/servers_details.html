@@ -9,7 +9,7 @@
 
 <div align="center">
 	
-	{% if server %}		
+	{% if server %}
 		<form action="/servers/{{ server.id }}" method="post">
 			{{ form.hidden_tag() }}
 			
@@ -20,7 +20,7 @@
 					<font color="red">{{ form.ip.errors | join(', ') }}</font>
 				{% endif %}
 			</p>
-			
+
 			<p>
 				<b>Alias:</b><br>
 				{{ form.alias }}<br>
@@ -28,12 +28,12 @@
 					<font color="red">{{ form.alias.errors | join(', ') }}</font>
 				{% endif %}
 			</p>
-			
+
 			<p>
 				<b>Is active:</b><br>
 				{{ form.is_active }}<br>
 			</p>
-	
+
 			<p>
 				<b>Max tasks:</b><br>
 				{{ form.max_tasks }}<br>
@@ -41,7 +41,7 @@
 					<font color="red">{{ form.max_tasks.errors | join(', ') }}</font>
 				{% endif %}
 			</p>
-			
+
 			<p>
 				<b>Current number of tasks:</b>
 				{{ server.cur_tasks }}<br>
@@ -54,9 +54,7 @@
 	    Wrong server id!<br><br>
 	    <a href="/servers">server list</a>
     {% endif %}
-    
-</div>	
 
-
+</div>
 
 {% endblock %}
