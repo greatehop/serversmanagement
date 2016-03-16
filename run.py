@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from app import app, socketio
-from core.tools import Scheduler
+from tools.core import Scheduler
 
 if __name__ == '__main__':
 

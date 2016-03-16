@@ -51,8 +51,8 @@ class UserForm(Form):
     is_active = BooleanField('is_active', default=True)
 
 class TaskDeployMOSForm(Form):
-    deployment_name = TextField('deployment_name',
-                                validators=[Required()])
+    #TODO: add unique validator
+    deploy_name = TextField('deploy_name', validators=[Required()])
     iso_url = TextField('iso_url', validators=[Required()])
     node_count = IntegerField('node_count',
                               default=settings.NODE_COUNT,
@@ -76,6 +76,6 @@ class TaskDeployMOSForm(Form):
                              validators=[NumberRange(min=1)])
 
 class TaskCleanMOSForm(Form):
-    deployment_name = SelectField('deployment_name', coerce=int)
+    deploy_name = SelectField('deploy_name', coerce=int)
 
 #TODO: taskform for admin user ?

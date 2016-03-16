@@ -8,16 +8,17 @@
 	<form action="/tasks/{{ task.id }}" method="post">
 		{{ form.hidden_tag() }}
 		<p>
-			<b>DeploymentName:</b><br>
-			{{ form.deployment_name(size=20) }}<br>
-			{% if form.deployment_name.errors %}
-				<font color="red">{{ form.deployment_name.errors | join(', ') }}</font>
+			<b>deployName:</b><br>
+			(username will be added automatically, like: admin_test1)<br>
+			{{ form.deploy_name(size=20) }}<br>
+			{% if form.deploy_name.errors %}
+				<font color="red">{{ form.deploy_name.errors | join(', ') }}</font>
 			{% endif %}
 		</p>
 
 		<p>
 			<b>URL(file/ISO/torrent):</b><br>
-			<a href="http://product-jenkins-reports.vm.mirantis.net/">MOS ISOs</a><br>
+			(just put torrent link from <a href="http://product-jenkins-reports.vm.mirantis.net/">MOS ISOs</a>)<br>
 			{{ form.iso_url(size=150) }}<br>
 			{% if form.iso_url.errors %}
 				<font color="red">{{ form.iso_url.errors | join(', ') }}</font>
@@ -44,7 +45,8 @@
 		</p>
 		
 	    <p>
-			<b>Days to keep ENV:</b><br>
+			<b>Days to keep env:</b><br>
+			(env will be deleted after N days - <b>still not implemented yet</b>)<br>
 			{{ form.keep_days }}<br>
 			{% if form.keep_days.errors %}
 				<font color="red">{{ form.keep_days.errors | join(', ') }}</font>

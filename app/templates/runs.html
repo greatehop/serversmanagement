@@ -5,6 +5,9 @@
 {% block body %}
 
 <div align="center">
+	
+	{% if run_list %}
+	
 	<table border="1">
 		<tr align="center">
 			<td><b>#</b></td>
@@ -60,6 +63,10 @@
 			</tr>
 		{% endfor %}
 	</table>
+	
+	{% else %}
+		Runs not found
+	{% endif %}
 </div>
 
 {% endblock %}

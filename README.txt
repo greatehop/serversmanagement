@@ -36,6 +36,7 @@ INSTALL:
 create database <db_name>;
 GRANT ALL PRIVILEGES ON <db_name>.* TO '<db_user>'@'<host>' IDENTIFIED BY '<password>' WITH GRANT OPTION;
 flush privileges;
+cd tools; ./create_db.py
 
 - add user and user on remote servers
 

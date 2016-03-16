@@ -1,8 +1,8 @@
-import datetime
 import settings
-from core import tools
+from tools import core
 from app import app, db, forms, models, lm, oid
 
+import datetime
 from flask import Flask, render_template, redirect, request, \
                   session, request, g
 from flask.ext.login import login_user, logout_user, \
@@ -37,55 +37,57 @@ def tasks(task_id=None):
                     user_id=g.user.id,
                     task_id=task_id,
                     start_datetime=datetime.datetime.utcnow(),
-                    args={'deployment_name': form.deployment_name.data,
-                                'iso_url': form.iso_url.data,
-                                'node_count': form.node_count.data,
-                                'slave_node_cpu': form.slave_node_cpu.data,
-                                'slave_node_mem': form.slave_node_mem.data,
-                                'keep_days': form.keep_days.data})
+                    args={'deploy_name': '%s_%s' % (g.user.name, 
+                                                    form.deploy_name.data),
+                          'iso_url': form.iso_url.data,
+                          'node_count': form.node_count.data,
+                          'slave_node_cpu': form.slave_node_cpu.data,
+                          'slave_node_mem': form.slave_node_mem.data,
+                          'keep_days': form.keep_days.data})
                 db.session.add(run)
                 db.session.commit()
 
                 # get server and execute run
-                server = tools.get_server()
+                server = core.get_server()
                 if server:
-                    tools.run_task(task, server, run)
+                    core.run_task(task, server, run)
 
                 return redirect('/runs')
             return render_template('tasks_deploy_mos.html',
                                    task=task, form=form)
-        
+
         elif task.name == 'clean_mos':
             #TODO: show all envs for admin
-            form = forms.TaskCleanMOSForm()
             
+            form = forms.TaskCleanMOSForm()
+
             # generate alive envs (state "done") for current user
             # and all alive envs for admin
             state_done = settings.RUN_STATE['done']
             run_list = models.Run.query.order_by(
                     desc(models.Run.id)).filter_by(
                     user_id=g.user.id, state=state_done, task_id=1).all()
-            
+
             if run_list:
-                form.deployment_name.choices = [
-                    (run.id, run.args['deployment_name']) for run in run_list]
+                form.deploy_name.choices = [
+                    (run.id, run.args['deploy_name']) for run in run_list]
                 if form.validate_on_submit():
                     # get server from existing run
-                    run_id = int(form.deployment_name.data)
+                    run_id = int(form.deploy_name.data)
                     exist_run = [i for i in run_list if i.id == run_id][0]
                     server = models.Server.query.get(exist_run.server_id)
-                    
+
                     # save run to db
                     run = models.Run(
                         user_id=g.user.id, task_id=task_id, 
-                        args={'deployment_name': form.deployment_name.data},
+                        args={'deploy_name': exist_run.args['deploy_name']},
                         start_datetime=datetime.datetime.utcnow())
                     db.session.add(run)
                     db.session.commit()
-    
+
                     # execute run
-                    tools.run_task(task, server, run)
-                    
+                    core.run_task(task, server, run)
+
                     # mark existing run as removed 
                     db.session.query(models.Run).filter_by(
                         id=exist_run.id).update(
@@ -97,7 +99,7 @@ def tasks(task_id=None):
                         id=exist_run.server_id).update(
                         {'cur_tasks': models.Server.cur_tasks-1})
                     db.session.commit()
-                    
+
                     return redirect('/runs')
             else:
                 form = None
@@ -142,9 +144,9 @@ def servers(server_id=None):
             # edit server settings
             db.session.query(models.Server).filter_by(id=server_id).update(
                 {'ip': form.ip.data, 
-                'alias': form.alias.data,
-                'state': form.is_active.data,
-                'max_tasks': form.max_tasks.data})
+                 'alias': form.alias.data,
+                 'state': form.is_active.data,
+                 'max_tasks': form.max_tasks.data})
             db.session.commit()
             return redirect('/servers')
         else:
@@ -195,7 +197,7 @@ def stats():
 @login_required
 def users(user_id=None):
     #TODO: change way to log in
-    
+
     #TODO: add info about admin user in setting
 
     if not g.user.is_admin:
@@ -208,7 +210,7 @@ def users(user_id=None):
                 {'state': form.is_active.data,
                  'role': form.is_admin.data})
             db.session.commit()
-            
+
             return redirect('/users')
         else:
             # show user setting

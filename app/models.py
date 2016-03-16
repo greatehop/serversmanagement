@@ -55,8 +55,8 @@ class Server(db.Model):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(15), index=True, unique=True)
-    desc = db.Column(db.String(120))
-    taskfile = db.Column(db.String(15))
+    desc = db.Column(db.String(150))
+    taskfile = db.Column(db.String(150))
     taskname = db.Column(db.String(15), unique=True)
     state = db.Column(db.SmallInteger, default=settings.TASK_STATE['on'])
     runs = db.relationship('Run', backref='task', lazy='dynamic')

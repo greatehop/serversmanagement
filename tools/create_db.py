@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-from migrate.versioning import api
+import sys
+sys.path.insert(0, '../')
 from app import db, models
-import os.path
 
 db.create_all()
 
