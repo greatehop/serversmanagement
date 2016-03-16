@@ -1,10 +1,10 @@
-DESCRIPTION:
+## DESCRIPTION
 
 ServersManagement - "mini-jenkins", allows to run scripts on remote servers via WebUI.
 
 In current time tool has only 2 tasks that allows to deploy/clean OpenStask Fuel node.
 
-ACRH:
+## ACRH:
 
 WebUI - Flask with plugins
 DB - SQLAlchemy - MySQL
@@ -21,7 +21,7 @@ where "EXECUTOR" may be one of:
 - API Jenkins with args
 - ansible/etc ?
 
-FAQ:
+## FAQ
 
 Why wouldn't you use "Jenkins" ?
 
@@ -29,32 +29,39 @@ Why wouldn't you use "Jenkins" ?
 
 - can't check some server's state/args/etc BEFORE run job
 
-INSTALL:
+## INSTALL
 
 - create mysql user/grants
-
+<pre>
 create database <db_name>;
 GRANT ALL PRIVILEGES ON <db_name>.* TO '<db_user>'@'<host>' IDENTIFIED BY '<password>' WITH GRANT OPTION;
 flush privileges;
 cd tools; ./create_db.py
+</pre>
 
 - add user and user on remote servers
 
 - generate ssh key
 
+<pre>
 ssh-keygen
+</pre>
 
 - copy ssh pub keys to servers
 
+<pre>
 ssh-copy-id <user>@<server>
+</pre>
 
 - setup software
 
+<pre>
 git clone https://github.com/greatehop/serversmanagement
 cd serversmanagement
 virtualenv venv
 . venv/bin/activate
 pip install -r requirements.txt
+</pre>
 
 - edit settings.py
 
@@ -64,8 +71,10 @@ TODO: need add details
 - run app
 TODO: need add details
 
-TODO:
+## TODO
 
 - find and fix all issues
 
+<pre>
 grep -r 'TODO' ./
+</pre>
