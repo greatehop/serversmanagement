@@ -4,7 +4,7 @@ ServersManagement - "mini-jenkins", allows to run scripts on remote servers via 
 
 In current time tool has only 2 tasks that allows to deploy/clean OpenStask Fuel node.
 
-## ACRH:
+## ARCHITECTURE:
 
 WebUI - Flask with plugins
 DB - SQLAlchemy - MySQL
