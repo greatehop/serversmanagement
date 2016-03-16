@@ -4,10 +4,12 @@ ServersManagement - "mini-jenkins", allows to run scripts on remote servers via 
 
 In current time tool has only 2 tasks that allows to deploy/clean OpenStask Fuel node.
 
-## ARCHITECTURE:
+## ARCHITECTURE
 
 WebUI - Flask with plugins
+
 DB - SQLAlchemy - MySQL
+
 Remote executor - Fabric
 
 Steps:
@@ -16,7 +18,7 @@ app login -> openid provider -> app -> task -> run -> "EXECUTOR" -> save/show re
 
 where "EXECUTOR" may be one of:
 - python.subprocess -> Fabfic -> bash script with args (current implementation)
-- python.subprocess -> Fabfic with args 
+- python.subprocess -> Fabfic with args
 - API Fabric with args
 - API Jenkins with args
 - ansible/etc ?
@@ -31,16 +33,6 @@ Why wouldn't you use "Jenkins" ?
 
 ## INSTALL
 
-- create mysql user/grants
-<pre>
-create database <db_name>;
-GRANT ALL PRIVILEGES ON <db_name>.* TO '<db_user>'@'<host>' IDENTIFIED BY '<password>' WITH GRANT OPTION;
-flush privileges;
-cd tools; ./create_db.py
-</pre>
-
-- add user and user on remote servers
-
 - generate ssh key
 
 <pre>
@@ -50,12 +42,16 @@ ssh-keygen
 - copy ssh pub keys to servers
 
 <pre>
-ssh-copy-id <user>@<server>
+ssh-copy-id user@server
 </pre>
+
+- add user and user on remote servers
 
 - setup software
 
 <pre>
+apt-get update
+apt-get install screen git vim nginx python-pip python-dev python-virtualenv mysql-server libmysqlclient-dev
 git clone https://github.com/greatehop/serversmanagement
 cd serversmanagement
 virtualenv venv
@@ -63,13 +59,37 @@ virtualenv venv
 pip install -r requirements.txt
 </pre>
 
+- configurate nginx
+
+<pre>
+cp ./tools/nginx.conf /etc/nginx/sites-available/sm.conf
+ln -s /etc/nginx/sites-available/sm.conf /etc/nginx/sites-enabled/
+nginx -t
+service nginx reload
+</pre>
+
+- create mysql db/user/grants/init tables
+
+<pre>
+service mysql start
+mysql -u root -p
+CREATE DATABASE dbname;
+GRANT ALL PRIVILEGES ON dbname.* TO dbuser@host IDENTIFIED BY password WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+cd tools; python ./create_db.py
+</pre>
+
 - edit settings.py
 
-- run configurator for "(deploy/clean)_mos" task's script
-TODO: need add details
+- configurate remote server
+
+https://docs.fuel-infra.org/fuel-dev/devops.html
 
 - run app
-TODO: need add details
+
+<pre>
+screen -t sm python ./run.py
+</pre>
 
 ## TODO
 

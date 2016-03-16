@@ -1,5 +1,11 @@
-Fabric == 1.10.2
-Flask == 0.10.1
-SQLAlchemy == 1.0.8
-WTForms == 2.1
-sqlalchemy_migrate == 0.10.0
+eventlet
+Fabric
+gevent
+SQLAlchemy
+Flask
+WTForms
+Flask-Login
+Flask-OpenID
+Flask-SQLAlchemy
+Flask-SocketIO
+Flask-MySQLdb

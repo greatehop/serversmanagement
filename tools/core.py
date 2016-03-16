@@ -22,7 +22,7 @@ class ReadWriteStream(object):
                 line = stream.readline()
                 if line:
                     # send line to client
-                    socketio.emit('line', {'data': line }, namespace='/test') 
+                    socketio.emit('line', {'data': line }, namespace='/test')
 
                     data.append(line)
                 else:
@@ -73,14 +73,14 @@ class Scheduler(object):
 
 def get_server():
     """
-    get random and not loaded server (based on max/cur tasks in db) or None 
+    get random and not loaded server (based on max/cur tasks in db) or None
     and update server state
     """
 
     #TODO: add lock
     server_state = settings.SERVER_STATE['on']
     server_list = models.Server.query.filter_by(state=server_state).all()
-    tmp_list = [{'id': s, 'weight': s.max_tasks-s.cur_tasks} 
+    tmp_list = [{'id': s, 'weight': s.max_tasks-s.cur_tasks}
                 for s in server_list if s.max_tasks-s.cur_tasks]
     random.shuffle(tmp_list)
     try:
@@ -114,7 +114,7 @@ def run_task(task, server, run):
 
     # add arguments for task
     if run.args:
-        vars = ','.join(['%s="%s"' % (key, val) 
+        vars = ','.join(['%s="%s"' % (key, val)
                          for key, val in run.args.iteritems()])
         cmd += ':%s' % vars
 

@@ -37,7 +37,7 @@ def tasks(task_id=None):
                     user_id=g.user.id,
                     task_id=task_id,
                     start_datetime=datetime.datetime.utcnow(),
-                    args={'deploy_name': '%s_%s' % (g.user.name, 
+                    args={'deploy_name': '%s_%s' % (g.user.name,
                                                     form.deploy_name.data),
                           'iso_url': form.iso_url.data,
                           'node_count': form.node_count.data,
@@ -58,7 +58,7 @@ def tasks(task_id=None):
 
         elif task.name == 'clean_mos':
             #TODO: show all envs for admin
-            
+
             form = forms.TaskCleanMOSForm()
 
             # generate alive envs (state "done") for current user
@@ -79,7 +79,7 @@ def tasks(task_id=None):
 
                     # save run to db
                     run = models.Run(
-                        user_id=g.user.id, task_id=task_id, 
+                        user_id=g.user.id, task_id=task_id,
                         args={'deploy_name': exist_run.args['deploy_name']},
                         start_datetime=datetime.datetime.utcnow())
                     db.session.add(run)
@@ -88,7 +88,7 @@ def tasks(task_id=None):
                     # execute run
                     core.run_task(task, server, run)
 
-                    # mark existing run as removed 
+                    # mark existing run as removed
                     db.session.query(models.Run).filter_by(
                         id=exist_run.id).update(
                         {'state': settings.RUN_STATE['removed']})
@@ -143,7 +143,7 @@ def servers(server_id=None):
         if form.validate_on_submit():
             # edit server settings
             db.session.query(models.Server).filter_by(id=server_id).update(
-                {'ip': form.ip.data, 
+                {'ip': form.ip.data,
                  'alias': form.alias.data,
                  'state': form.is_active.data,
                  'max_tasks': form.max_tasks.data})
@@ -164,7 +164,7 @@ def servers(server_id=None):
     else:
         if form.validate_on_submit():
             # add server with settings
-            server = models.Server(ip=form.ip.data, 
+            server = models.Server(ip=form.ip.data,
                                    alias=form.alias.data,
                                    state=form.is_active.data,
                                    max_tasks=form.max_tasks.data)
@@ -173,7 +173,7 @@ def servers(server_id=None):
             return redirect('/servers')
         else:
             server_list = models.Server.query.all()
-            return render_template('servers.html', 
+            return render_template('servers.html',
                                    server_list=server_list, form=form)
 
 @app.route('/about', strict_slashes=False)

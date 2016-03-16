@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 from app import app, socketio
 from tools.core import Scheduler
 
