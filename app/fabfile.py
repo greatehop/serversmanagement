@@ -22,7 +22,7 @@ def deploy_mos(**kwargs):
         run('/var/lib/jenkins/scripts/deploy_mos.sh')
 
     # for tests
-    #run('for i in {1..20}; do echo ${i}; uptime; sleep 2; done')
+    #run('for i in {1..10}; do echo ${i}; uptime; sleep 2; done')
 
 @task
 def clean_mos(**kwargs):
@@ -30,12 +30,8 @@ def clean_mos(**kwargs):
     Task "clean_mos" for clean up Fuel node
     """
 
-    with shell_env(DEPLOY_NAME=kwargs['deploy_name']):
-        run('VENV_PATH="/home/jenkins/scripts/venv-mos"')
-        run('source ${VENV_PATH}/bin/activate')
-        run('dos.py sync')
-        run('ENV_NAME=${DEPLOY_NAME}')
-        run('dos.py erase ${ENV_NAME}')
+    with shell_env(DEPLOYMENT_NAME=kwargs['deploy_name']):
+        run('/var/lib/jenkins/scripts/clean_mos.sh')
 
         # for tests
         #run('echo ${DEPLOY_NAME}')

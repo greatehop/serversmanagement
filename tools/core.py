@@ -49,25 +49,28 @@ class Scheduler(object):
 
     #TODO: add interupt handler
     #TODO: add delete env by keep days argument
+    def __init__(self):
+        def daemon():
+            state_inq = settings.RUN_STATE['in_queue']
+            while True:
+                runs_in_queue = models.Run.query.order_by(
+                    models.Run.id).filter_by(state=state_inq, task_id=1).all()
 
-    def _daemon():
-        state_in_q = settings.RUN_STATE['in_queue']
-        while True:
-            runs_in_queue = models.Run.query.order_by(
-                models.Run.id).filter_by(state=state_in_q).all()
-            if runs_in_queue:
-                for run in runs_in_queue:
-                    # get server and execute run
-                    server = get_server()
-                    if server:
-                        task = models.Task.query.get(run.task_id)
-                        run_task(task, server, run)
-                    else:
-                        break
-            sleep(settings.DAEMON_TIMEOUT)
+                if runs_in_queue:
+                    print runs_in_queue
+                    for run in runs_in_queue:
+                        # get server and execute run
+                        server = get_server()
+                        print server
+                        if server:
+                            task = models.Task.query.get(run.task_id)
+                            run_task(task, server, run)
+                        else:
+                            break
 
-    def run(self):
-        main = Thread(target=self._daemon())
+                sleep(settings.DAEMON_TIMEOUT)
+
+        main = Thread(target=daemon)
         main.daemon = True
         main.start()
 
