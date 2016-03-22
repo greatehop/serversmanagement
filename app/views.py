@@ -57,16 +57,19 @@ def tasks(task_id=None):
                                    task=task, form=form)
 
         elif task.name == 'clean_mos':
-            #TODO: show all envs for admin
-
             form = forms.TaskCleanMOSForm()
 
-            # generate alive envs (state "done") for current user
-            # and all alive envs for admin
-            state_done = settings.RUN_STATE['done']
+            # generate alive envs for current user
+            filter = {'state': settings.RUN_STATE['done'],
+                      'user_id': g.user.id,
+                      'task_id': 1}
+            
+            # generate all alive envs for admin user
+            if g.user.is_admin:
+                filter.pop('user_id')
+
             run_list = models.Run.query.order_by(
-                    desc(models.Run.id)).filter_by(
-                    user_id=g.user.id, state=state_done, task_id=1).all()
+                    desc(models.Run.id)).filter_by(**filter).all()
 
             if run_list:
                 form.deploy_name.choices = [
@@ -185,9 +188,9 @@ def about():
 def stats():
     #TODO: add user/keep days/task/
 
-    state_on = settings.SERVER_STATE['on']
-    empty_server_list = models.Server.query.filter_by(
-        state=state_on, cur_tasks=0).all()
+    filter = { 'state': settings.SERVER_STATE['on'],
+               'cur_tasks': 0}
+    empty_server_list = models.Server.query.filter_by(**filter).all()
     return render_template('stats.html',
                            empty_server_list=empty_server_list)
 
@@ -285,10 +288,8 @@ def after_login(resp):
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@app.errorhandler(500)
+@app.errorhandler(Exception)
 def internal_error(e):
-    return render_template('404.html'), 500
-
-#TODO: other errorhandlers???
+    return render_template('500.html'), 500
 
 #TODO: add update keep days

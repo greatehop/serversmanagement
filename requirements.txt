@@ -4,6 +4,7 @@ gevent
 SQLAlchemy
 Flask
 WTForms
+flask-wtf
 Flask-Login
 Flask-OpenID
 Flask-SQLAlchemy

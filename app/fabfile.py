@@ -12,7 +12,7 @@ def deploy_mos(**kwargs):
     """
     Task "deploy_mos" for deploy Fuel node
     """
-
+    """
     with shell_env(ISO_URL=kwargs['iso_url'],
                    KEEP_DAYS=kwargs['keep_days'],
                    DEPLOYMENT_NAME=kwargs['deploy_name'],
@@ -20,18 +20,19 @@ def deploy_mos(**kwargs):
                    SLAVE_NODE_CPU=kwargs['slave_node_cpu'],
                    NODE_COUNT=kwargs['node_count']):
         run('/var/lib/jenkins/scripts/deploy_mos.sh')
-
+    """
     # for tests
-    #run('for i in {1..10}; do echo ${i}; uptime; sleep 2; done')
+    run('for i in {1..10}; do echo ${i}; uptime; sleep 2; done')
 
 @task
 def clean_mos(**kwargs):
     """
     Task "clean_mos" for clean up Fuel node
     """
-
+    """
     with shell_env(DEPLOYMENT_NAME=kwargs['deploy_name']):
         run('/var/lib/jenkins/scripts/clean_mos.sh')
-
-        # for tests
-        #run('echo ${DEPLOY_NAME}')
+    """
+    
+    # for tests
+    run('echo ${DEPLOY_NAME}')

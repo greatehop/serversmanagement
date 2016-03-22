@@ -1,6 +1,6 @@
-DEBUG = True
+DEBUG = False
 
-SQLALCHEMY_DATABASE_URI = 'mysql://servmng:servmng@172.18.196.233/servmng'
+SQLALCHEMY_DATABASE_URI = 'mysql://sm:Uchoo6si@localhost/sm'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 CSRF_ENABLED = True

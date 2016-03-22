@@ -2,11 +2,13 @@ import settings
 from app import models, db, socketio
 
 from subprocess import Popen, PIPE
-from threading import Thread
+from threading import Thread, Lock
 from time import sleep
 import random
 import datetime
 from flask.ext.socketio import SocketIO, emit
+
+lock = Lock()
 
 class ReadWriteStream(object):
     """
@@ -42,60 +44,56 @@ class ReadWriteStream(object):
         self.t.daemon = True
         self.t.start()
 
-class Scheduler(object):
+class Scheduler(Thread):
     """
     daemon for execute runs in queue
     """
 
-    #TODO: add interupt handler
     #TODO: add delete env by keep days argument
     def __init__(self):
-        def daemon():
-            state_inq = settings.RUN_STATE['in_queue']
-            while True:
-                runs_in_queue = models.Run.query.order_by(
-                    models.Run.id).filter_by(state=state_inq, task_id=1).all()
-
-                if runs_in_queue:
-                    print runs_in_queue
-                    for run in runs_in_queue:
-                        # get server and execute run
-                        server = get_server()
-                        print server
-                        if server:
-                            task = models.Task.query.get(run.task_id)
-                            run_task(task, server, run)
-                        else:
-                            break
-
-                sleep(settings.DAEMON_TIMEOUT)
-
-        main = Thread(target=daemon)
-        main.daemon = True
-        main.start()
+        Thread.__init__(self)
+        self.daemon = True
+        
+    def run(self):
+        filter = {'state': settings.RUN_STATE['in_queue'],
+                  'task_id': 1}
+        while True:
+            runs_in_queue = models.Run.query.order_by(
+                models.Run.id).filter_by(**filter).all()
+            if runs_in_queue:
+                for run in runs_in_queue:
+                    # get server and execute run
+                    server = get_server()
+                    if server:
+                        task = models.Task.query.get(run.task_id)
+                        run_task(task, server, run)
+                    else:
+                        break
+            # forse close transaction
+            db.session.commit()
+            sleep(settings.DAEMON_TIMEOUT)
 
 def get_server():
     """
     get random and not loaded server (based on max/cur tasks in db) or None
-    and update server state
     """
 
-    #TODO: add lock
-    server_state = settings.SERVER_STATE['on']
-    server_list = models.Server.query.filter_by(state=server_state).all()
-    tmp_list = [{'id': s, 'weight': s.max_tasks-s.cur_tasks}
-                for s in server_list if s.max_tasks-s.cur_tasks]
-    random.shuffle(tmp_list)
-    try:
-        server = max(tmp_list, key=lambda i: i['weight'])['id']
-        # increase current number of tasks
-        db.session.query(models.Server).filter_by(id=server.id).update(
-            {'cur_tasks': models.Server.cur_tasks+1})
-        db.session.commit()
-        return server
-    except ValueError:
-        return None
-
+    with lock:
+        filter = {'state': settings.SERVER_STATE['on']}
+        server_list = models.Server.query.filter_by(**filter).all()
+        tmp_list = [{'id': s, 'weight': int(s.max_tasks)-int(s.cur_tasks)}
+                    for s in server_list if int(s.max_tasks)-int(s.cur_tasks)]
+        random.shuffle(tmp_list)
+        try:
+            server = max(tmp_list, key=lambda i: i['weight'])['id']
+            # increase current number of tasks
+            db.session.query(models.Server).filter_by(id=server.id).update(
+                {'cur_tasks': models.Server.cur_tasks+1})
+            db.session.commit()
+            return server
+        except ValueError:
+            return None
+        
 def run_task(task, server, run):
     """
     execute task (fabric file) and save console output in background
