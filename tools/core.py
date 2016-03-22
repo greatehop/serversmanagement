@@ -24,7 +24,8 @@ class ReadWriteStream(object):
                 line = stream.readline()
                 if line:
                     # send line to client
-                    socketio.emit('line', {'data': line }, namespace='/test')
+                    socketio.emit('line', {'data': line }, 
+                                  namespace='/run%s' % run_id)
 
                     data.append(line)
                 else:
@@ -78,21 +79,23 @@ def get_server():
     get random and not loaded server (based on max/cur tasks in db) or None
     """
 
-    with lock:
-        filter = {'state': settings.SERVER_STATE['on']}
-        server_list = models.Server.query.filter_by(**filter).all()
-        tmp_list = [{'id': s, 'weight': int(s.max_tasks)-int(s.cur_tasks)}
-                    for s in server_list if int(s.max_tasks)-int(s.cur_tasks)]
-        random.shuffle(tmp_list)
-        try:
-            server = max(tmp_list, key=lambda i: i['weight'])['id']
-            # increase current number of tasks
-            db.session.query(models.Server).filter_by(id=server.id).update(
-                {'cur_tasks': models.Server.cur_tasks+1})
-            db.session.commit()
-            return server
-        except ValueError:
-            return None
+    lock.acquire()
+    filter = {'state': settings.SERVER_STATE['on']}
+    server_list = models.Server.query.filter_by(**filter).all()
+    tmp_list = [{'id': s, 'weight': int(s.max_tasks)-int(s.cur_tasks)}
+                for s in server_list if int(s.max_tasks)-int(s.cur_tasks)]
+    random.shuffle(tmp_list)
+    try:
+        server = max(tmp_list, key=lambda i: i['weight'])['id']
+        # increase current number of tasks
+        db.session.query(models.Server).filter_by(id=server.id).update(
+            {'cur_tasks': models.Server.cur_tasks+1})
+        db.session.commit()
+        lock.release() 
+        return server
+    except ValueError:
+        lock.release()
+        return None
         
 def run_task(task, server, run):
     """

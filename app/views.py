@@ -119,12 +119,11 @@ def runs(run_id=None):
         desc(models.Run.id)).limit(settings.LAST_RUNS).all()
 
     #TODO: pagination
+    #TODO: share run/task
+    #TODO: if run in q - update start_datetime
 
     if run_id is not None:
         run = models.Run.query.get(run_id)
-
-        #TODO: share run/task
-        #TODO: if run in q - update start_datetime
         return render_template('runs_details.html', run=run)
     else:
         return render_template('runs.html', run_list=run_list)
