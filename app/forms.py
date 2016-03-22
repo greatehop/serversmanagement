@@ -54,9 +54,9 @@ class TaskDeployMOSForm(Form):
     #TODO: add unique validator
     deploy_name = TextField('deploy_name', validators=[Required()])
     iso_url = TextField('iso_url', validators=[Required()])
-    node_count = IntegerField('node_count',
-                              default=settings.NODE_COUNT,
-                              validators=[NumberRange(min=1)])
+    nodes_count = IntegerField('nodes_count',
+                               default=settings.NODES_COUNT,
+                               validators=[NumberRange(min=1)])
 
     slave_node_cpu = SelectField('slave_node_cpu',
                                  validators=[],

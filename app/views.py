@@ -40,7 +40,7 @@ def tasks(task_id=None):
                     args={'deploy_name': '%s_%s' % (g.user.name,
                                                     form.deploy_name.data),
                           'iso_url': form.iso_url.data,
-                          'node_count': form.node_count.data,
+                          'nodes_count': form.nodes_count.data,
                           'slave_node_cpu': form.slave_node_cpu.data,
                           'slave_node_mem': form.slave_node_mem.data,
                           'keep_days': form.keep_days.data})

@@ -1,4 +1,4 @@
-DEBUG = False
+DEBUG = True
 
 SQLALCHEMY_DATABASE_URI = 'mysql://servmng:servmng@172.18.196.233/servmng'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -20,7 +20,7 @@ DAEMON_TIMEOUT = 10
 MAX_TASKS = 1
 
 # tasks args
-NODE_COUNT = 6
+NODES_COUNT = 6
 KEEP_DAYS = 1
 
 # admin list

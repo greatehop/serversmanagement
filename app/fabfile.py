@@ -18,7 +18,7 @@ def deploy_mos(**kwargs):
                    DEPLOYMENT_NAME=kwargs['deploy_name'],
                    SLAVE_NODE_MEM=kwargs['slave_node_mem'],
                    SLAVE_NODE_CPU=kwargs['slave_node_cpu'],
-                   NODE_COUNT=kwargs['node_count']):
+                   NODES_COUNT=kwargs['nodes_count']):
         run('/var/lib/jenkins/scripts/deploy_mos.sh')
     """
     # for tests

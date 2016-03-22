@@ -28,9 +28,9 @@
 		<p>
 			<b>Count of cluster nodes:</b><br>
 			(including Fuel node)<br>
-			{{ form.node_count }}<br>
-			{% if form.node_count.errors %}
-				<font color="red">{{ form.node_count.errors | join(', ') }}</font>
+			{{ form.nodes_count }}<br>
+			{% if form.nodes_count.errors %}
+				<font color="red">{{ form.nodes_count.errors | join(', ') }}</font>
 			{% endif %}
 		</p>
 
