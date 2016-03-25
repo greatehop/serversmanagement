@@ -6,8 +6,6 @@ class User(db.Model):
     name = db.Column(db.String(64), index=True, unique=True)
     role = db.Column(db.SmallInteger, default=settings.USER_ROLE['user'])
     email = db.Column(db.String(120), index=True, unique=True)
-    #TODO: to get rid of PickleType
-    args = db.Column(db.PickleType)
     state = db.Column(db.SmallInteger, default=settings.USER_STATE['on'])
     runs = db.relationship('Run', backref='user', lazy='dynamic')
 
@@ -43,7 +41,6 @@ class Server(db.Model):
     ip = db.Column(db.String(15), index=True, unique=True)
     alias = db.Column(db.String(120), index=True)
     state = db.Column(db.SmallInteger, default=settings.SERVER_STATE['on'])
-    #TODO: to get rid of PickleType
     runs = db.relationship('Run', backref='server', lazy='dynamic')
     #TODO: add user/pass (user default=settings.ssh_user), ssh_port default=22
     max_tasks = db.Column(db.Integer, default=settings.MAX_TASKS)

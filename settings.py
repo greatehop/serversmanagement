@@ -1,6 +1,6 @@
-DEBUG = True
+DEBUG = False
 
-SQLALCHEMY_DATABASE_URI = 'mysql://servmng:servmng@172.18.196.233/servmng'
+SQLALCHEMY_DATABASE_URI = 'mysql://sm:<CHANGE_ME>@localhost/sm'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 CSRF_ENABLED = True
@@ -25,7 +25,7 @@ KEEP_DAYS = 1
 
 # admin list
 # (needs only for first log in, manage by user -> is_admin)
-ADMINS = ['ogubanov@mirantis.com']
+ADMINS = ['user@domain.com']
 
 USER_ROLE = {'user': 0, 'admin': 1}
 

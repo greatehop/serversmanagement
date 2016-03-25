@@ -24,7 +24,7 @@ class ReadWriteStream(object):
                 line = stream.readline()
                 if line:
                     # send line to client
-                    socketio.emit('line', {'data': line }, 
+                    socketio.emit('line', {'data': line },
                                   namespace='/run%s' % run_id)
 
                     data.append(line)
@@ -41,7 +41,7 @@ class ReadWriteStream(object):
                     db.session.commit()
                     break
 
-        self.t = Thread(target=rw_output, args =(self.stream, self.data))
+        self.t = Thread(target=rw_output, args=(self.stream, self.data))
         self.t.daemon = True
         self.t.start()
 
@@ -54,7 +54,7 @@ class Scheduler(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.daemon = True
-        
+
     def run(self):
         filter = {'state': settings.RUN_STATE['in_queue'],
                   'task_id': 1}
@@ -91,18 +91,18 @@ def get_server():
         db.session.query(models.Server).filter_by(id=server.id).update(
             {'cur_tasks': models.Server.cur_tasks+1})
         db.session.commit()
-        lock.release() 
+        lock.release()
         return server
     except ValueError:
         lock.release()
         return None
-        
+
 def run_task(task, server, run):
     """
     execute task (fabric file) and save console output in background
 
-    example: 
-    fab --fabfile <fabfile> -u <user> 
+    example:
+    fab --fabfile <fabfile> -u <user>
         -H <ip> <taskname>[:key1=val1,keyN=valN]
     """
 

@@ -63,7 +63,7 @@ def tasks(task_id=None):
             filter = {'state': settings.RUN_STATE['done'],
                       'user_id': g.user.id,
                       'task_id': 1}
-            
+
             # generate all alive envs for admin user
             if g.user.is_admin:
                 filter.pop('user_id')
@@ -185,13 +185,15 @@ def about():
 @app.route('/stats', strict_slashes=False)
 @login_required
 def stats():
-    #TODO: add user/keep days/task/
 
-    filter = { 'state': settings.SERVER_STATE['on'],
-               'cur_tasks': 0}
-    empty_server_list = models.Server.query.filter_by(**filter).all()
-    return render_template('stats.html',
-                           empty_server_list=empty_server_list)
+    server_list = models.Server.query.join(models.Run).join(
+        models.User).join(models.Task).add_columns(models.Server.ip, 
+        models.Server.alias, models.Server.state, models.Server.max_tasks,
+        models.Server.cur_tasks, models.User.name).filter(
+        models.Run.state == settings.RUN_STATE['done'],
+        models.Run.task_id == 1).all()
+
+    return render_template('stats.html', server_list=server_list)
 
 @app.route('/users', strict_slashes=False)
 @app.route('/users/<int:user_id>',

@@ -4,16 +4,39 @@
 
 {% block body %}
 
-    <b>still not implemented yet</b>
-    
-    {# 
-    {% if empty_server_list %}
-    <h4>empty servers:</h4>
-        {% for server in empty_server_list %}
-            {{ server.ip }} {{ server.alias }} <br>
-        {% endfor %}
-    {% endif %} 
-    
-    #}
+<div align="center">
+    {% if server_list %}
+        <h4>Servers stats:</h4>
+
+            <table border="1">
+
+                <tr align="center">
+                    <td><b>Server</b></td>
+                    <td><b>User</b></td>
+                    <td><b>Cur tasks</b></td>
+                    <td><b>Max tasks</b></td>
+                </tr>
+
+            {% for server in server_list %}
+
+                <tr align="center" >
+                        {% if server.state %}
+                        <td bgcolor="#A9F5BC">
+                        {% else %}
+                        <td bgcolor="#FA5858">
+                        {% endif %} 
+                            {{ server.ip }}<br>{{ server.alias }}
+                        </td> 
+                        <td>{{ server.name }} </td>
+                        <td> {{ server.cur_tasks }} </td>
+                        <td> {{ server.max_tasks }} </td>
+                </tr>
+
+            {% endfor %}
+
+            </table>
+
+    {% endif %}
+</div>
 
 {% endblock %}
