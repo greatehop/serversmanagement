@@ -2,15 +2,34 @@
 
 ServersManagement - "mini-jenkins", allows to run scripts on remote servers via WebUI.
 
-In current time tool has only 2 tasks that allows to deploy/clean OpenStask Fuel node.
+
+For auth app uses launchpad openid. Default admin user(s) should be set in ADMIN_LIST in settings.py
+
+User's permissions manage in tab "User" (available only for admin users).
+
+
+In current time tool has only 2 tasks that allows to "deploy/clean" OpenStask Fuel node.
+
+
+One server allows to execute more than one tasks, for task "deploy_mos" it means more than one env.
+
+Amount of tasks per server manage by admin user in tab "Server" (available only for admin users).
+
+App chooses least loaded server (randomly, if more than one).
+
+
+If there are no empty servers in current time all "runs" stay in queue.
+
+App's daemon periodically check (DAEMON_TIMEOUT in settings.py) for "free" server.
+
 
 ## ARCHITECTURE
 
-WebUI - Flask with plugins
+WebUI: Flask with plugins
 
-DB - SQLAlchemy - MySQL
+DB: SQLAlchemy - MySQL
 
-Remote executor - Fabric
+Remote executor: - Fabric
 
 Steps:
 
