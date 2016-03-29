@@ -52,7 +52,7 @@ class UserForm(Form):
 
 class TaskDeployMOSForm(Form):
     #TODO: add unique validator
-    deploy_name = TextField('deploy_name', validators=[Required()])
+    deploy_name = TextField('deploy_name', validators=[])
     iso_url = TextField('iso_url', validators=[Required()])
     nodes_count = IntegerField('nodes_count',
                                default=settings.NODES_COUNT,

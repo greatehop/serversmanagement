@@ -5,10 +5,11 @@ from subprocess import Popen, PIPE
 from threading import Thread, Lock
 from time import sleep
 import random
-import datetime
+from datetime import datetime
 from flask.ext.socketio import SocketIO, emit
 
 lock = Lock()
+
 
 class ReadWriteStream(object):
     """
@@ -33,7 +34,7 @@ class ReadWriteStream(object):
                     cmd_out = '<br>'.join([i for i in data])
                     # update run - set cmd_out, run_state and end_datetime
                     run_state = settings.RUN_STATE['done']
-                    end_datetime = datetime.datetime.utcnow()
+                    end_datetime = datetime.utcnow()
                     db.session.query(models.Run).filter_by(id=run_id).update(
                         {'state': run_state,
                          'end_datetime': end_datetime,

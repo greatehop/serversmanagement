@@ -14,16 +14,16 @@
         <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
             <tr>
                 <td><b>IP/FQDN:</b></td>
-                <td>{{ form.ip }}
-                    {% if form.ip.errors %}
+                <td>{{ form.ip }} *
+                    {% if form.ip.errors %}<br>
                         <br><font color="red">{{ form.ip.errors | join(', ') }}</font>
                     {% endif %}</td>
                 </tr>
 
                 <tr>
                     <td><b>Alias:</b></td>
-                    <td>{{ form.alias }}
-                    {% if form.alias.errors %}
+                    <td>{{ form.alias }} *
+                    {% if form.alias.errors %}<br>
                         <br><font color="red">{{ form.alias.errors | join(', ') }}</font>
                     {% endif %}</td>
                 </tr>
@@ -35,8 +35,8 @@
 
                 <tr>
                     <td><b>Max tasks:</b></td>
-                    <td>{{ form.max_tasks }}
-                    {% if form.max_tasks.errors %}
+                    <td>{{ form.max_tasks }} *
+                    {% if form.max_tasks.errors %}<br>
                         <br><font color="red">{{ form.max_tasks.errors | join(', ') }}</font>
                     {% endif %}</td>
                 </tr>

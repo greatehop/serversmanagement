@@ -2,7 +2,8 @@ import settings
 from tools import core
 from app import app, db, forms, models, lm, oid
 
-import datetime
+import re
+from datetime import datetime
 from flask import Flask, render_template, redirect, request, \
                   session, request, g
 from flask.ext.login import login_user, logout_user, \
@@ -15,8 +16,6 @@ from sqlalchemy import desc
            methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def tasks(task_id=None):
-    #TODO: hide task(s) if it is disabled (show for admin's users)
-
     #TODO: refactor tasks as plugins
 
     #TODO: add "run again with the same arguments"
@@ -31,14 +30,25 @@ def tasks(task_id=None):
         if task.name == 'deploy_mos':
             form = forms.TaskDeployMOSForm()
             if form.validate_on_submit():
-
+                # get or generate deployment name
+                if form.deploy_name.data:
+                    deploy_name = '%s_%s' % (g.user.name, 
+                                             form.deploy_name.data)
+                else:
+                    ver = re.findall('fuel\-(\d+\.\d+\-\d+)',
+                                     form.iso_url.data)
+                    if ver:
+                        iso = ver[0]
+                    else:
+                        iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
+                    deploy_name = '%s_%s' % (g.user.name, iso)
+                
                 # save run to db
                 run = models.Run(
                     user_id=g.user.id,
                     task_id=task_id,
-                    start_datetime=datetime.datetime.utcnow(),
-                    args={'deploy_name': '%s_%s' % (g.user.name,
-                                                    form.deploy_name.data),
+                    start_datetime=datetime.utcnow(),
+                    args={'deploy_name': deploy_name,
                           'iso_url': form.iso_url.data,
                           'nodes_count': form.nodes_count.data,
                           'slave_node_cpu': form.slave_node_cpu.data,
@@ -84,7 +94,7 @@ def tasks(task_id=None):
                     run = models.Run(
                         user_id=g.user.id, task_id=task_id,
                         args={'deploy_name': exist_run.args['deploy_name']},
-                        start_datetime=datetime.datetime.utcnow())
+                        start_datetime=datetime.utcnow())
                     db.session.add(run)
                     db.session.commit()
 
@@ -134,6 +144,7 @@ def runs(run_id=None):
 @login_required
 def servers(server_id=None):
     #TODO: add delete
+
     #TODO: block delete/disable if server has taks/runs
     #Server.query.filter_by(id=server_id).delete()
 
@@ -186,6 +197,7 @@ def about():
 @login_required
 def stats():
 
+    # get info who loaded servers
     server_list = models.Server.query.join(models.Run).join(
         models.User).join(models.Task).add_columns(models.Server.ip, 
         models.Server.alias, models.Server.state, models.Server.max_tasks,
@@ -202,7 +214,7 @@ def stats():
 def users(user_id=None):
     #TODO: change way to log in
 
-    #TODO: add info about admin user in setting
+    #TODO: add info about admin user in settings
 
     if not g.user.is_admin:
         return render_template('404.html')
