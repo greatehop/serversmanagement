@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set +x
+
 PATH_MAIN="/home/jenkins"
 VENV_PATH="${PATH_MAIN}/scripts/venv-mos"
 

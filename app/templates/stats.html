@@ -6,30 +6,29 @@
 
 <div align="center">
     {% if server_list %}
-        <h4>Servers stats:</h4>
+        <h3>Servers state</h3>
 
-            <table border="1">
+            <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
 
                 <tr align="center">
                     <td><b>Server</b></td>
+                    <td><b>IP</b></td>
                     <td><b>User</b></td>
                     <td><b>Cur tasks</b></td>
                     <td><b>Max tasks</b></td>
                 </tr>
 
             {% for server in server_list %}
-
-                <tr align="center" >
-                        {% if server.state %}
-                        <td bgcolor="#A9F5BC">
-                        {% else %}
-                        <td bgcolor="#FA5858">
-                        {% endif %} 
-                            {{ server.ip }}<br>{{ server.alias }}
-                        </td> 
-                        <td>{{ server.name }} </td>
-                        <td> {{ server.cur_tasks }} </td>
-                        <td> {{ server.max_tasks }} </td>
+                {% if server.state %}
+                    <tr align="center">
+                {% else %}
+                    <tr align="center" class="error">
+                {% endif %}
+                        <td>{{ server.alias }}</td>
+                        <td>{{ server.ip }}</td>
+                        <td>{{ server.name }}</td>
+                        <td>{{ server.cur_tasks }}</td>
+                        <td>{{ server.max_tasks }}</td>
                 </tr>
 
             {% endfor %}

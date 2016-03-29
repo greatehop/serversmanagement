@@ -5,31 +5,29 @@
 {% block body %}
 
 <div align="center">
+    <h3>All users</h3>
+    {% if user_list %}
+        <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
+            <tr align="center">
+                <td><b>#</b></td>
+                <td><b>Name</b></td>
+                <td><b>email</b></td>
+                <td><b>Is active</b></td>
+                <td><b>Is admin</b></td>
+            </tr>
 
-	{% if user_list %}
-			<table border="1">
-				<tr align="center">
-					<td><b>#</b></td>
-					<td><b>Name</b></td>
-					<td><b>email</b></td>
-					<td><b>Is active</b></td>
-					<td><b>Is admin</b></td>
-				</tr>
-			{% for user in user_list %}
-				{% if loop.index is divisibleby(2) %}
-					<tr align="center">
-				{% else %}
-					<tr align="center" bgcolor="#D8D8D8">
-				{% endif %}
-					<td><a href="/users/{{ user.id }}">#{{ user.id }}</a></td>
-					<td>{{ user.name }}</td>
-					<td>{{ user.email }}</td>
-					<td>{{ user.is_active }}</td>
-					<td>{{ user.is_admin }}</td>
-				</tr>
-			{% endfor %}
-			</table>
-	{% endif %}
+            {% for user in user_list %}
+            <tr align="center">
+                <td><a href="/users/{{ user.id }}">#{{ user.id }}</a></td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.is_active }}</td>
+                <td>{{ user.is_admin }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
 </div>
 
 {% endblock %}

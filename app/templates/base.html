@@ -3,27 +3,27 @@
 <head>
     <title>ServersManagement</title>
     <link href="/static/css/bootstrap.css" rel="stylesheet">
-	<link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
-	<link rel="shortcut icon" href="/static/ico/favicon.ico">
-		
-	<script src="/static/js/jquery.min.js"></script>
+    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="shortcut icon" href="/static/ico/favicon.ico">
 
-	<script type="text/javascript" charset="utf-8">
-	    // loader
-		jQuery.ajaxSetup({
-		  beforeSend: function() {
-		     $('#loader').show();
-		  },
-		  complete: function(){
-		     $('#loader').hide();
-		  },
-		  success: function() {}
-		});
+    <script src="/static/js/jquery.min.js"></script>
 
-	</script>
+    <script type="text/javascript" charset="utf-8">
+        // loader
+        jQuery.ajaxSetup({
+         beforeSend: function() {
+          $('#loader').show();
+        },
+         complete: function(){
+          $('#loader').hide();
+        },
+          success: function() {}
+        });
 
-	{% block js %}
-	{% endblock %}
+    </script>
+
+    {% block js %}
+    {% endblock %}
 
     <style type="text/css">
       body {
@@ -69,7 +69,7 @@
    <div class="container-fluid">
 
       <div class="row-fluid">
-        <div class="span3">
+        <div class="span2">
         {% if g.user.is_authenticated %}
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
@@ -86,20 +86,20 @@
         {% endif %}
 
         </div>
-        <div class="span9">
-          <div class="hero-unit">
+        <div class="span10">
+          <div class="brand">
             <h1>{% block title %}{% endblock %}</h1>
+            <hr />
           </div>
 
         <div class="row-fluid">
             <div>
                   {% block body %}
                   {% endblock %}
-
             </div>
         </div>
 
-      </div>
+       </div>
       </div>
    </div>
 

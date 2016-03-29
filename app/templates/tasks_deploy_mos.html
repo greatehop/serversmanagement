@@ -1,60 +1,90 @@
 {% extends "base.html" %}
 
-{% block title %}<a href="/tasks">Tasks</a>  - {{ task.taskname }} {% endblock %}
+{% block title %}<a href="/tasks">Tasks</a> - {{ task.taskname }}{% endblock %}
 
 {% block body %}
 
 <div align="center">
-	<form action="/tasks/{{ task.id }}" method="post">
-		{{ form.hidden_tag() }}
-		<p>
-			<b>deployName:</b><br>
-			(username will be added automatically, like: admin_test1)<br>
-			{{ form.deploy_name(size=20) }}<br>
-			{% if form.deploy_name.errors %}
-				<font color="red">{{ form.deploy_name.errors | join(', ') }}</font>
-			{% endif %}
-		</p>
+    <h3>Deploy environment</h3>
 
-		<p>
-			<b>URL(file/ISO/torrent):</b><br>
-			(just put torrent link from <a href="http://product-jenkins-reports.vm.mirantis.net/">MOS ISOs</a>)<br>
-			{{ form.iso_url(size=150) }}<br>
-			{% if form.iso_url.errors %}
-				<font color="red">{{ form.iso_url.errors | join(', ') }}</font>
-			{% endif %}
-		</p>
+    <form action="/tasks/{{ task.id }}" method="post">
+    <table class="table table-hover table-striped table-bordered" style="max-width:65% !important; margin:0 auto !important;">
+    {{ form.hidden_tag() }}
 
-		<p>
-			<b>Count of cluster nodes:</b><br>
-			(including Fuel node)<br>
-			{{ form.nodes_count }}<br>
-			{% if form.nodes_count.errors %}
-				<font color="red">{{ form.nodes_count.errors | join(', ') }}</font>
-			{% endif %}
-		</p>
+    <tr>
+        <td>
+            <b>URL(ISO/torrent):</b><br>
+            (just put torrent link from <a href="http://product-jenkins-reports.vm.mirantis.net/">MOS ISOs</a>)
+        </td>
 
-		<p>
-			<b>Number of CPU on slave nodes:</b><br>
-			{{ form.slave_node_cpu }}<br>
-		</p>
+        <td>
+            {{ form.iso_url(size=150) }} *
 
-		<p>
-			<b>Amount of memory on slave node:</b><br>
-			{{ form.slave_node_mem }}<br>
-		</p>
-		
-	    <p>
-			<b>Days to keep env:</b><br>
-			(env will be deleted after N days - <b>still not implemented yet</b>)<br>
-			{{ form.keep_days }}<br>
-			{% if form.keep_days.errors %}
-				<font color="red">{{ form.keep_days.errors | join(', ') }}</font>
-			{% endif %}
-		</p>
+            {% if form.iso_url.errors %}<br>
+                <font color="red">{{ form.iso_url.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
 
-	    <p><input class="btn" type="submit" value="run"></p>
-	</form>
+    <tr>
+        <td>
+            <b>Count of cluster nodes:</b><br>
+            (including Fuel node)
+        </td>
+
+        <td>
+            {{ form.nodes_count }} *
+
+            {% if form.nodes_count.errors %}<br>
+                <font color="red">{{ form.nodes_count.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <b>Number of CPU on slave nodes:</b>
+        </td>
+        <td>{{ form.slave_node_cpu }}</td>
+    </tr>
+
+    <tr>
+        <td>
+            <b>Amount of memory on slave node:</b>
+        </td>
+        <td>{{ form.slave_node_mem }}</td>
+    </tr>
+
+    {#
+    <tr>
+        <td>Days to keep env:</td>
+        (env will be deleted after N days - <td>still not implemented yet</b>)<br>
+        {{ form.keep_days }}<br>
+
+        {% if form.keep_days.errors %}
+            <font color="red">{{ form.keep_days.errors | join(', ') }}</font>
+        {% endif %}
+    </p>
+    #}
+
+    <tr>
+        <td>
+            <b>Deployment name:</b><br>
+            (generate automatically, like: admin_9.0_123)
+        </td>
+
+        <td>
+            {{ form.deploy_name(size=20) }} 
+
+            {% if form.deploy_name.errors %}<br>
+                <font color="red">{{ form.deploy_name.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
+
+    </table>
+    <br><p><input class="btn btn-success" type="submit" value="deploy"></p>
+    </form>
 </div>
 
 {% endblock %}

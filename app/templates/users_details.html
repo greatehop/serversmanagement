@@ -1,47 +1,47 @@
 {% extends "base.html" %}
 
-{% block title %}<a href="/users">Users</a>{% endblock %}
+{% block title %}<a href="/users">Users</a> - user details{% endblock %}
 
 {% block body %}
 
 <div align="center">
 
-	{% if user %}
-		<form action="/users/{{ user.id }}" method="post">
-		{{ form.hidden_tag() }}
-			<table border=1>
-				<tr>
-					<td><b>Name:</b></td>
-					<td>{{ user.name }}</td>
-				</tr>
-				
-				<tr>
-					<td><b>Email:</b></td>
-					<td>{{ user.email }}</td>
-				</tr>
-				
-				<tr>
-					<td><b>Is active:</b></td>
-					<td>{{ form.is_active }}</td>
-				</tr>
-				
-				<tr>
-					<td><b>Is admin:</b></td>
-					<td>{{ form.is_admin }}</td>
-					
-				</tr>
-			</table>
-			<br><br>
-			<p><input type="submit" value="edit" class="btn"></p>
+    {% if user %}
+        <form action="/users/{{ user.id }}" method="post">
+        {{ form.hidden_tag() }}
+        <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
+            <tr>
+                <td><b>Name:</b></td>
+                <td>{{ user.name }}</td>
+            </tr>
 
-		</form>
-	{% else %}
-		<div class="center">
+            <tr>
+                <td><b>Email:</b></td>
+                <td>{{ user.email }}</td>
+            </tr>
 
-		    Wrong user id!<br><br>
-		    <a href="/users">user list</a>
-		</div>
-	{% endif %}
+            <tr>
+                <td><b>Is active:</b></td>
+                <td>{{ form.is_active }}</td>
+            </tr>
+
+            <tr>
+                <td><b>Is admin:</b></td>
+                <td>{{ form.is_admin }}</td>
+
+            </tr>
+        </table>
+
+        <br><br>
+        <p><input type="submit" value="edit" class="btn"></p>
+
+        </form>
+    {% else %}
+        <div class="center">
+            <h1>Wrong userid!</h1>
+        </div>
+    {% endif %}
+
 </div>
 
 {% endblock %}

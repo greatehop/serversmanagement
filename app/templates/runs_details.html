@@ -26,9 +26,9 @@
 
 
 	{% if run %}
-		<div align="center"><b>Run's info</b><br></div>
+		<div align="center"><h3>Run's info</h3><br></div>
 		<div align="center">
-		<table border="1">
+	    <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
 			
 			<tr align="center">
 				<td><b>Run's ID</b></td>
@@ -107,10 +107,9 @@
 		
 		<br>
 		
-		
-		<div align="center"><b>Task's arguments</b><br></div>
+		<div align="center"><h3>Task's arguments</h3><br></div>
 		{% if run.args %}
-		<table border="1">
+        <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
 		   {% for key, value in run.args.items() %}
 				<tr>
 					<td><b>{{ key }}</b></td>
@@ -125,7 +124,7 @@
 
 		<br>
 		
-		<div align="center"><b>Task's output</b><br></div>
+		<div align="center"><h3>Task's output</h3><br></div>
 		
 		{% if run.cmd_out %}
 			<div align="left">
@@ -140,8 +139,7 @@
 
 	{% else %}
 		<div class="center">
-		    Wrong run id!<br><br>
-		    <a href="/runs">run list</a>
+		    <h1>Wrong run id!</h1>
 		</div>
     {% endif %}
 

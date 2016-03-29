@@ -6,25 +6,20 @@
 
 <div align="center">
 
-	{% if form %}
-		<form action="/tasks/{{ task.id }}" method="post">
-			{{ form.hidden_tag() }}
-	
-		    <p>
-				<b>Choose environment:</b><br>
-				{{ form.deploy_name }}<br>
-			</p>
-	
-		    <p><input type="submit" value="clean" class="btn"></p>
-		</form>
-	{% else %}
-		Active environments not found<br><br>
-		<a href="/tasks">task list</a>
-	{% endif %}
+    {% if form %}
+        <form action="/tasks/{{ task.id }}" method="post">
+            {{ form.hidden_tag() }}
 
-	{% if form.errors %}
-	    {{ form.errors }}
-	{% endif %}
+            <p>
+                <h3>Delete environment</h3>
+                {{ form.deploy_name }}<br>
+            </p>
+
+            <p><input type="submit" value="clean" class="btn btn-danger"></p>
+        </form>
+    {% else %}
+        <h1>Active environments not found</h1>
+    {% endif %}
 
 </div>
 

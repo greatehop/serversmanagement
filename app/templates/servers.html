@@ -6,97 +6,88 @@
 {% block body %}
 
 <div align="center">
-	<h1>Add server</h1>
-	<form action="/servers" method="post">
-	{{form.hidden_tag()}}
+    <h3>Add server</h3>
+    <form action="/servers" method="post">
+    {{form.hidden_tag()}}
+    <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
 
-		<p>
-			<b>IP/FQDN:</b><br>
-			{{ form.ip(size=15) }}<br>
-			{% if form.ip.errors %}
-				 <font color="red">{{ form.ip.errors | join(', ') }}</font>
-			{% endif %}
-		</p>
+    <tr>
+        <td><b>IP/FQDN:</b></td>
+        <td>
+            {{ form.ip(size=15) }} *
+            {% if form.ip.errors %}<br>
+                <font color="red">{{ form.ip.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
 
-		<p>
-			<b>Alias:</b><br>
-			{{ form.alias(size=120) }}<br>
-			{% if form.alias.errors %}
-				 <font color="red">{{ form.alias.errors | join(', ') }}</font>
-			{% endif %}
-		</p>
+    <tr>
+        <td><b>Alias:</b></td>
+        <td>
+            {{ form.alias(size=120) }} *
+            {% if form.alias.errors %}<br>
+                <font color="red">{{ form.alias.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
 
-		<p>
-			<b>Is active:</b><br>
-			{{ form.is_active }}<br>
-		</p>
+    <tr>
+        <td><b>Is active:</b></td>
+        <td>{{ form.is_active }}</td>
+    </tr>
 
-		<p>
-			<b>max_tasks:</b><br>
-			{{ form.max_tasks }}<br>
-			{% if form.max_tasks.errors %}
-				{% for i in form.max_tasks.errors %}
-				 <font color="red">{{ i | join(', ') }}</font>
-				{% endfor %}
-			{% endif %}
-		</p>
+    <tr>
+        <td><b>Max tasks:</b></td>
+        <td>
+            {{ form.max_tasks }} *
+            {% if form.max_tasks.errors %}<br>
+                <font color="red">{{ form.max_tasks.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
 
-		<p>
-			<input type="submit" value="add" class="btn">
-		</p>
-	</form>
+    </table>
+    <br><p><input type="submit" value="add" class="btn btn-success"></p>
+    </form>
 </div>
 
 <div align="center">
-	{% if server_list %}
-		<h1>Servers</h1>
-		<table border="1">
-			<tr align="center">
-				<td><b>#</b></td>
-				<td><b>IP</b></td>
-				<td><b>Alias</b></td>
-				<td><b>State</b></td>
-				<td><b>Max tasks</b></td>
-				<td><b>Current<br> number of tasks</b></td>
-			</tr>
-		{% for server in server_list %}
-			{% if loop.index is divisibleby(2) %}
-				<tr align="center">
-			{% else %}
-				<tr align="center" bgcolor="#D8D8D8">
-			{% endif %}
-				<td>
-					<a href="/servers/{{ server.id }}">#{{ server.id }}</a>
-				</td>
+    {% if server_list %}
+        <h3>All servers</h3>
+        <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
 
-				<td>
-					{{ server.ip }}
-				</td>
+        <tr align="center">
+            <td><b>#</b></td>
+            <td><b>IP</b></td>
+            <td><b>Alias</b></td>
+            <td><b>State</b></td>
+            <td><b>Max tasks</b></td>
+            <td><b>Cur tasks</b></td>
+        </tr>
 
-				<td>
-					{{ server.alias }}
-				</td>
+        {% for server in server_list %}
+            {% if server.state %}
+        <tr align="center">
+            {% else %}
+        <tr align="center" class="error">
+            {% endif %}
 
-				<td> 
-					{% if server.state %}
-						<img src="/static/ico/on.png"/>
-					{% else %}
-						<img src="/static/ico/off.png"/>
-					{% endif %}
-				</td>
+            <td><a href="/servers/{{ server.id }}">#{{ server.id }}</a></td>
 
-				<td>
-					{{ server.max_tasks }}
-				</td>
+            <td>{{ server.ip }}</td>
 
-				<td>
-					{{ server.cur_tasks }}
-				</td>
-			</tr>
+            <td>{{ server.alias }}</td>
 
-		{% endfor %}
-		</table>
-	{% endif %}
+            <td>{% if server.state %} on {% else%} off {% endif %}</td>
+
+            <td>{{ server.max_tasks }}</td>
+
+            <td>{{ server.cur_tasks }}</td>
+        </tr>
+
+        {% endfor %}
+        </table>
+    {% endif %}
 </div>
 
 {% endblock %}

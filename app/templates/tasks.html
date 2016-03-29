@@ -5,13 +5,9 @@
 {% block body %}
 
 <div align="center">
-    <table>
-        {% for task in task_list %}
-        <tr>
-            <td><a href="/tasks/{{ task.id }}"><h2>{{ task.name }}</h2></a></td>
-        </tr>
-        {% endfor %}
-       </table>
+    <h3>All tasks</h3>
+    <a class="btn btn-success" href="/tasks/1">Deploy mos</a> |
+    <a class="btn btn-danger" href="/tasks/2">Clean mos</a>
 </div>
 
 {% endblock %}

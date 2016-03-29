@@ -7,8 +7,8 @@
 <div align="center">
 	
 	{% if run_list %}
-	
-	<table border="1">
+    <h3>All runs</h3>
+	<table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
 		<tr align="center">
 			<td><b>#</b></td>
 			<td><b>State</b></td>
@@ -18,11 +18,7 @@
 			<td><b>Start date/time</b></td>
 		</tr>
 		{% for run in run_list %}
-			{% if loop.index is divisibleby(2) %}
-			<tr align="center">
-			{% else %}
-			<tr align="center" bgcolor="#D8D8D8">
-			{% endif %}
+		<tr align="center">
 				<td>
 					<a href="/runs/{{ run.id }}">#{{ run.id }}</a>
 				</td>
@@ -63,9 +59,11 @@
 			</tr>
 		{% endfor %}
 	</table>
-	
+	</div>
 	{% else %}
-		Runs not found
+	    <div align="center">
+		<h1>Runs not found</h1>
+	    </div>
 	{% endif %}
 </div>
 

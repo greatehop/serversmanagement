@@ -8,6 +8,8 @@ ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-re
 VENV_PATH="${PATH_MAIN}/scripts/venv-mos"
 FUEL_QA_PATH="${PATH_MAIN}/scripts/fuel-qa"
 
+mkdir -p ${PATH_DOWNLOADS_ISO}
+
 function get_iso() {
     ISO_URL="$1"
     ISO_FILE=${ISO_URL##*/}
@@ -20,12 +22,14 @@ function get_iso() {
 function show_env_info() {
     ENV_NAME="$1"
     FUEL_IP="$2"
-    set +x
+    echo -e "\n"
     echo "################################################################################################"
     echo "###################################  Environment Info: #########################################"
     echo "################################################################################################"
     echo -e "\n"
-    echo "Fuel IP: http://${FUEL_IP}:8000"
+    echo "Fuel UI: http://${FUEL_IP}:8000"
+    echo -e "\n"
+    echo "SSH: 
     echo -e "\n"
     dos.py net-list ${ENV_NAME}
     echo -e "\n"
