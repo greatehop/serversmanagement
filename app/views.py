@@ -42,7 +42,7 @@ def tasks(task_id=None):
                     else:
                         iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
                     deploy_name = '%s_%s' % (g.user.name, iso)
-                
+
                 # save run to db
                 run = models.Run(
                     user_id=g.user.id,

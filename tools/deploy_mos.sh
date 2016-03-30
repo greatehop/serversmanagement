@@ -3,10 +3,10 @@
 set +x
 
 PATH_MAIN="/home/jenkins"
-PATH_DOWNLOADS_ISO="${PATH_MAIN}/scripts/iso"
-ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false  --allow-piece-length-change=true"
-VENV_PATH="${PATH_MAIN}/scripts/venv-mos"
-FUEL_QA_PATH="${PATH_MAIN}/scripts/fuel-qa"
+PATH_DOWNLOADS_ISO="${PATH_MAIN}/sm_scripts/iso"
+ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false --allow-piece-length-change=true"
+VENV_PATH="${PATH_MAIN}/sm_scripts/venv-mos"
+FUEL_QA_PATH="${PATH_MAIN}/sm_scripts/fuel-qa"
 
 mkdir -p ${PATH_DOWNLOADS_ISO}
 
@@ -29,7 +29,7 @@ function show_env_info() {
     echo -e "\n"
     echo "Fuel UI: http://${FUEL_IP}:8000"
     echo -e "\n"
-    echo "SSH: 
+    echo "SSH:"
     echo -e "\n"
     dos.py net-list ${ENV_NAME}
     echo -e "\n"
@@ -54,6 +54,6 @@ cd ${FUEL_QA_PATH}
 dos.py start ${ENV_NAME}
 
 # show fuel info
-FUEL_ADM_IP=$(virsh net-dumpxml ${ENV_NAME}_admin | grep -P "(\d+\.){3}" -o | awk '{print ""$0"2"}')
+FUEL_ADM_IP=$(virsh net-dumpxml ${ENV_NAME}_admin | grep -P '(\d+\.){3}' -o | awk '{print ""$0"2"}')
 
 show_env_info "${ENV_NAME}" "${FUEL_ADM_IP}"

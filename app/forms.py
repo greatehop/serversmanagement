@@ -51,7 +51,6 @@ class UserForm(Form):
     is_active = BooleanField('is_active', default=True)
 
 class TaskDeployMOSForm(Form):
-    #TODO: add unique validator
     deploy_name = TextField('deploy_name', validators=[])
     iso_url = TextField('iso_url', validators=[Required()])
     nodes_count = IntegerField('nodes_count',
