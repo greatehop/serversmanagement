@@ -33,8 +33,8 @@ function show_env_info() {
 
     SSH_PORT=$(shuf -i 3000-65000 -n 1)
     FUEL_PORT=$(shuf -i 3000-65000 -n 1)
-    ssh -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}
-    ssh -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
+    sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ssh -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}
+    sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ssh -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
 
     echo -e "\n"
     echo "<b>Fuel UI:</b> <a href='http://${SERVER_IP}:${FUEL_PORT}'>${SERVER_IP}:${FUEL_PORT}</a>"

@@ -18,7 +18,8 @@ def deploy_mos(**kwargs):
                    DEPLOYMENT_NAME=kwargs['deploy_name'],
                    SLAVE_NODE_MEM=kwargs['slave_node_mem'],
                    SLAVE_NODE_CPU=kwargs['slave_node_cpu'],
-                   NODES_COUNT=kwargs['nodes_count']):
+                   NODES_COUNT=kwargs['nodes_count'],
+                   SERVER_IP=kwargs['server_ip']):
         run('~/sm_scripts/deploy_mos.sh')
 
 @task

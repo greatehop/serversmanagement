@@ -102,7 +102,7 @@ https://docs.fuel-infra.org/fuel-dev/devops.html
 
 <pre>
 apt-get update
-apt-get install aria2
+apt-get install aria2 sshpass
 
 mkdir -p ~/sm_scripts/iso
 cd sm_scripts/
