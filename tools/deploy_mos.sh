@@ -8,6 +8,9 @@ ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-re
 VENV_PATH="${PATH_MAIN}/sm_scripts/venv-mos"
 FUEL_QA_PATH="${PATH_MAIN}/sm_scripts/fuel-qa"
 
+#export POOL_DEFAULT=10.177.0.0/16:24
+#export NODE_VOLUME_SIZE
+
 mkdir -p ${PATH_DOWNLOADS_ISO}
 
 function get_iso() {
@@ -33,8 +36,8 @@ function show_env_info() {
 
     SSH_PORT=$(shuf -i 3000-65000 -n 1)
     FUEL_PORT=$(shuf -i 3000-65000 -n 1)
-    sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ssh -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}
-    sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ssh -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
+    sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}
+    sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
 
     echo -e "\n"
     echo "<b>Fuel UI:</b> <a href='http://${SERVER_IP}:${FUEL_PORT}'>${SERVER_IP}:${FUEL_PORT}</a>"
