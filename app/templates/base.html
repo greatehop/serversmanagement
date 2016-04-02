@@ -4,10 +4,12 @@
     <title>ServersManagement</title>
     <link href="/static/css/bootstrap.css" rel="stylesheet">
     <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/static/css/backTop.css" rel="stylesheet">
     <link rel="shortcut icon" href="/static/ico/favicon.ico">
 
     <script src="/static/js/jquery.min.js"></script>
-
+    <script src="/static/js/jquery.backTop.min.js"></script>
+    
     <script type="text/javascript" charset="utf-8">
         // loader
         jQuery.ajaxSetup({
@@ -20,6 +22,17 @@
           success: function() {}
         });
 
+       $(document).ready( function() {
+        $('#backTop').backTop({
+          // the scroll position in px from the top
+          'position' : 300,
+          // scroll animation speed
+          'speed' : 10,
+          // red, white, black or green
+          'color' : 'black',
+        });
+       });
+    
     </script>
 
     {% block js %}
@@ -38,7 +51,7 @@
 </head>
 
 <body>
-
+<a id='backTop'>Back To Top</a>
    <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
