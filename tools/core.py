@@ -121,8 +121,12 @@ def run_task(task, server, run):
     if run.args:
         vars = ','.join(['%s="%s"' % (key, val)
                          for key, val in run.args.iteritems()])
+        vars += ',server_ip=%s' % server.ip
         cmd += ':%s' % vars
-
+    
+    if settings.DEBUG:
+        print cmd
+        
     # run command and write output to web/db in background
     process = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, shell=True)
     ReadWriteStream(process.stdout, run.id)

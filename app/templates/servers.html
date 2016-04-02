@@ -66,10 +66,12 @@
         </tr>
 
         {% for server in server_list %}
-            {% if server.state %}
-        <tr align="center">
-            {% else %}
+            {% if server.max_tasks == server.cur_tasks %}
+        <tr align="center" class="warning">
+            {% elif not server.state %}
         <tr align="center" class="error">
+            {% else %}
+        <tr align="center">
             {% endif %}
 
             <td><a href="/servers/{{ server.id }}">#{{ server.id }}</a></td>

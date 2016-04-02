@@ -14,21 +14,23 @@
                     <td><b>Server</b></td>
                     <td><b>IP</b></td>
                     <td><b>User</b></td>
-                    <td><b>Cur tasks</b></td>
                     <td><b>Max tasks</b></td>
+                    <td><b>Cur tasks</b></td>
                 </tr>
 
             {% for server in server_list %}
-                {% if server.state %}
-                    <tr align="center">
+                {% if server.max_tasks == server.cur_tasks %}
+            <tr align="center" class="warning">
+                {% elif not server.state %}
+            <tr align="center" class="error">
                 {% else %}
-                    <tr align="center" class="error">
+            <tr align="center">
                 {% endif %}
                         <td>{{ server.alias }}</td>
                         <td>{{ server.ip }}</td>
                         <td>{{ server.name }}</td>
-                        <td>{{ server.cur_tasks }}</td>
                         <td>{{ server.max_tasks }}</td>
+                        <td>{{ server.cur_tasks }}</td>
                 </tr>
 
             {% endfor %}
