@@ -8,9 +8,9 @@
     {% if server_list %}
         <h3>Servers state</h3>
 
-            <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
+            <table class="table table-hover table-striped table-bordered table-center" style="max-width:50% !important; margin:0 auto !important;">
 
-                <tr align="center">
+                <tr>
                     <td><b>Server</b></td>
                     <td><b>IP</b></td>
                     <td><b>User</b></td>
@@ -20,11 +20,11 @@
 
             {% for server in server_list %}
                 {% if server.max_tasks == server.cur_tasks %}
-            <tr align="center" class="warning">
+            <tr class="warning">
                 {% elif not server.state %}
-            <tr align="center" class="error">
+            <tr class="error">
                 {% else %}
-            <tr align="center">
+            <tr>
                 {% endif %}
                         <td>{{ server.alias }}</td>
                         <td>{{ server.ip }}</td>

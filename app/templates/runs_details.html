@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{# TODO: need add up button #}
-
 {% block js %}
 
     <script src="/static/js/socket.io.min.js"></script>
@@ -24,123 +22,121 @@
 
 {% block body %}
 
+    {% if run %}
+        <div align="center"><h3>Run's info</h3><br>
 
-	{% if run %}
-		<div align="center"><h3>Run's info</h3><br></div>
-		<div align="center">
-	    <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
-			
-			<tr align="center">
-				<td><b>Run's ID</b></td>
-				<td> {{ run.id }} </td>
-			</tr>
-			
-			<tr align="center">
-				<td><b>Task</b></td>
-				<td>{{ run.task.taskname }}</td>
-			</tr>
-			
-			<tr align="center">
-				<td><b>State</b></td>
-				<td>
-				  {% if run.state == '0' %}
-				    <font color="orange">in_queue</font>
-				  {% elif run.state == '1' %}
-				    in_progress
-				  {% elif run.state == '2' %}
-					<font color="green">done</font>
-				  {% elif run.state == '3' %}
-				  	<font color="red">canceled</font>
-				  {% else %}
-					removed
-				  {% endif %} </td>
-			</tr>
-			
-			<tr align="center">
-				<td><b>Servers</b></td>
-				<td> 
-					{% if run.server.id %}
-				     	{{ run.server.alias }} 
-				     {% else %}
-				     	-
-				     {% endif %}
-				</td>
-			</tr>
-			
-			<tr align="center">
-				<td><b>User</b></td>
-				<td> 
-					{{ run.user.name }}
-				</td>
-			</tr>
-			
-			<tr align="center">
-				<td><b>Start date/time</b></td>
-				<td>
-					{{ run.start_datetime.strftime('%H:%M:%S %d.%m.%Y')}}
-				</td>
-			</tr>
-			
-			<tr align="center">
-				<td><b>End date/time</b></td>
-				<td>
-					{% if run.end_datetime %}
-						{{ run.end_datetime.strftime('%H:%M:%S %d.%m.%Y') }}
-					{% else %}
-						-
-					{% endif %}
-				</td>
-			</tr>
-			
-			<tr align="center">
-				<td><b>Run's duration</b></td>
-				<td>
-					{% if run.end_datetime %}
-						{# TODO: fix format #}
-						{{ run.end_datetime-run.start_datetime }}
-					{% else %}
-						-
-					{% endif %}
-				</td>
-			</tr>
-		</table>
-		
-		<br>
-		
-		<div align="center"><h3>Task's arguments</h3><br></div>
-		{% if run.args %}
-        <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
-		   {% for key, value in run.args.items() %}
-				<tr>
-					<td><b>{{ key }}</b></td>
-			      	<td align="center">{{ value }}</td>
-			   </tr>
-		   {% endfor %}
-		</table>
-		{% else %}
-			None
-		{% endif %}
-		</div>
+        <table class="table table-hover table-striped table-bordered" style="max-width:30% !important; margin:0 auto !important;">
 
-		<br>
-		
-		<div align="center"><h3>Task's output</h3><br></div>
-		
-		{% if run.cmd_out %}
-			<div align="left">
-				{{ run.cmd_out | safe }}
-			</div>
-		{% else %}
-			{% if run.state == '1' %}
-				<div align="center" id='loader'><img src="/static/ico/loader.gif"/></div>
-			{% endif %}
-				<div align="left" id="cmd_out"></div>
-	    {% endif %}
+            <tr align="center">
+                <td><b>Run's ID</b></td>
+                <td> {{ run.id }} </td>
+            </tr>
 
-	{% else %}
-		<div class="center">
-		    <h1>Wrong run id!</h1>
-		</div>
+            <tr align="center">
+                <td><b>Task</b></td>
+                <td>{{ run.task.taskname }}</td>
+            </tr>
+
+            <tr align="center">
+                <td><b>State</b></td>
+                <td>
+                  {% if run.state == '0' %}
+                      <font color="orange">in_queue</font>
+                  {% elif run.state == '1' %}
+                      in_progress
+                  {% elif run.state == '2' %}
+                      <font color="green">done</font>
+                  {% elif run.state == '3' %}
+                      <font color="red">canceled</font>
+                  {% else %}
+                      removed
+                  {% endif %} </td>
+            </tr>
+
+            <tr align="center">
+                <td><b>Servers</b></td>
+                <td>
+                    {% if run.server.id %}
+                        {{ run.server.alias }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr align="center">
+                <td><b>User</b></td>
+                <td>
+                    {{ run.user.name }}
+                </td>
+            </tr>
+
+            <tr align="center">
+                <td><b>Start date/time</b></td>
+                <td>
+                    {{ run.start_datetime.strftime('%H:%M:%S %d.%m.%Y')}}
+                </td>
+            </tr>
+
+            <tr align="center">
+                <td><b>End date/time</b></td>
+                <td>
+                    {% if run.end_datetime %}
+                        {{ run.end_datetime.strftime('%H:%M:%S %d.%m.%Y') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr align="center">
+                <td><b>Run's duration</b></td>
+                <td>
+                    {% if run.end_datetime %}
+                    {# TODO: fix format #}
+                        {{ run.end_datetime-run.start_datetime }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <h3>Task's arguments</h3>
+        <br>
+
+        {% if run.args %}
+        <table class="table table-hover table-striped table-bordered" style="max-width:30% !important; margin:0 auto !important;">
+            {% for key, value in run.args.items() %}
+            <tr>
+                <td><b>{{ key }}</b></td>
+                <td align="center">{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            None
+        {% endif %}
+        </div>
+        <br>
+
+       <div align="center"><h3>Task's output</h3><br></div>
+
+        {% if run.cmd_out %}
+            <div align="left">
+                {{ run.cmd_out | safe }}
+            </div>
+            {% else %}
+                {% if run.state == '1' %}
+                    <div align="center" id='loader'><img src="/static/ico/loader.gif"/></div>
+                {% endif %}
+                    <div align="left" id="cmd_out"></div>
+                {% endif %}
+        {% else %}
+            <div class="center">
+                <h3>Wrong run id!</h3>
+            </div>
     {% endif %}
 
 {% endblock %}

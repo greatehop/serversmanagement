@@ -125,7 +125,10 @@ def tasks(task_id=None):
 @app.route('/runs/<int:run_id>', strict_slashes=False)
 @login_required
 def runs(run_id=None):
-    run_list = models.Run.query.order_by(
+    # show runs only with "done/in_progress/in_queue" states
+    run_list = models.Run.query.filter(
+        models.Run.task_id == 1,
+        models.Run.state != settings.RUN_STATE['removed']).order_by(
         desc(models.Run.id)).limit(settings.LAST_RUNS).all()
 
     #TODO: pagination
@@ -149,8 +152,10 @@ def servers(server_id=None):
     #Server.query.filter_by(id=server_id).delete()
 
     #TODO: add test ssh connection
+    """
     if not g.user.is_admin:
         return render_template('404.html')
+    """
     form = forms.ServerForm()
     if server_id is not None:
         if form.validate_on_submit():
@@ -196,7 +201,6 @@ def about():
 @app.route('/stats', strict_slashes=False)
 @login_required
 def stats():
-
     # get info who loaded servers
     server_list = models.Server.query.join(models.Run).join(
         models.User).join(models.Task).add_columns(models.Server.ip, 

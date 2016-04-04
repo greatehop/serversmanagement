@@ -7,8 +7,8 @@
 <div align="center">
     <h3>All users</h3>
     {% if user_list %}
-        <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
-            <tr align="center">
+        <table class="table table-hover table-striped table-bordered table-center" style="max-width:50% !important; margin:0 auto !important;">
+            <tr>
                 <td><b>#</b></td>
                 <td><b>Name</b></td>
                 <td><b>email</b></td>
@@ -17,7 +17,7 @@
             </tr>
 
             {% for user in user_list %}
-            <tr align="center">
+            <tr>
                 <td><a href="/users/{{ user.id }}">#{{ user.id }}</a></td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>

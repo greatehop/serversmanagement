@@ -9,7 +9,7 @@
     <h3>Add server</h3>
     <form action="/servers" method="post">
     {{form.hidden_tag()}}
-    <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
+    <table class="table table-hover table-striped table-bordered" style="max-width:30% !important; margin:0 auto !important;">
 
     <tr>
         <td><b>IP:</b></td>
@@ -54,9 +54,9 @@
 <div align="center">
     {% if server_list %}
         <h3>All servers</h3>
-        <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
+        <table class="table table-hover table-striped table-bordered table-center" style="max-width:50% !important; margin:0 auto !important;">
 
-        <tr align="center">
+        <tr>
             <td><b>#</b></td>
             <td><b>IP</b></td>
             <td><b>Alias</b></td>
@@ -66,12 +66,12 @@
         </tr>
 
         {% for server in server_list %}
-            {% if server.max_tasks == server.cur_tasks %}
-        <tr align="center" class="warning">
-            {% elif not server.state %}
-        <tr align="center" class="error">
+         {% if not server.state %}
+        <tr class="error">
+            {% elif server.max_tasks == server.cur_tasks %}
+        <tr class="warning">
             {% else %}
-        <tr align="center">
+        <tr>
             {% endif %}
 
             <td><a href="/servers/{{ server.id }}">#{{ server.id }}</a></td>

@@ -12,15 +12,16 @@
 {{ g.user.name }} {{ g.user.email }}
 <br><br>
 #}
+
 <h3>Fast links</h3>
 
-<a class="btn btn-success" href="/tasks/1">deploy mos</a> | 
+<a class="btn btn-success" href="/tasks/1">deploy mos</a> |
 <a class="btn btn-danger" href="/tasks/2">clean mos</a><br>
 <br>
 
 {% if run_list %}
     <h3>Your runs</h3>
-    <table class="table table-hover table-striped table-bordered" style="max-width:50% !important; margin:0 auto !important;">
+    <table class="table table-hover table-striped table-bordered table-center" style="max-width:50% !important; margin:0 auto !important;">
 
         <tr align="center">
             <td><b>#</b></td>
