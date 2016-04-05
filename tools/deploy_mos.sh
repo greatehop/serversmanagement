@@ -34,8 +34,9 @@ function show_env_info() {
     echo -e "\n"
     dos.py show ${ENV_NAME}
 
-    SSH_PORT=$(shuf -i 3000-65000 -n 1)
-    FUEL_PORT=$(shuf -i 3000-65000 -n 1)
+    #get random not binded port
+    while true; do SSH_PORT=$(shuf -i 5000-65000 -n 1); nc ${SERVER_IP} ${SSH_PORT} < /dev/null; if [[ $? -ne 0 ]]; then break; fi done
+    while true; do FUEL_PORT=$(shuf -i 5000-65000 -n 1); nc ${SERVER_IP} ${SSH_PORT} < /dev/null; if [[ $? -ne 0 ]]; then break; fi done
 
     echo "sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}"
     sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}

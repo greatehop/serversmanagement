@@ -125,11 +125,6 @@ def tasks(task_id=None):
 @app.route('/runs/<int:run_id>', strict_slashes=False)
 @login_required
 def runs(run_id=None):
-    # show runs only with "done/in_progress/in_queue" states
-    run_list = models.Run.query.filter(
-        models.Run.task_id == 1,
-        models.Run.state != settings.RUN_STATE['removed']).order_by(
-        desc(models.Run.id)).limit(settings.LAST_RUNS).all()
 
     #TODO: pagination
     #TODO: share run/task
@@ -139,6 +134,11 @@ def runs(run_id=None):
         run = models.Run.query.get(run_id)
         return render_template('runs_details.html', run=run)
     else:
+        # show runs only with "done/in_progress/in_queue" states
+        run_list = models.Run.query.filter(
+            models.Run.task_id == 1,
+            models.Run.state != settings.RUN_STATE['removed']).order_by(
+            desc(models.Run.id)).limit(settings.LAST_RUNS).all()
         return render_template('runs.html', run_list=run_list)
 
 @app.route('/servers', methods=['GET', 'POST'], strict_slashes=False)
@@ -152,10 +152,10 @@ def servers(server_id=None):
     #Server.query.filter_by(id=server_id).delete()
 
     #TODO: add test ssh connection
-    """
+    
     if not g.user.is_admin:
         return render_template('404.html')
-    """
+
     form = forms.ServerForm()
     if server_id is not None:
         if form.validate_on_submit():

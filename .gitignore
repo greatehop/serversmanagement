@@ -3,4 +3,4 @@
 .project
 db_repository/
 tmp/
-*.db
+venv/
