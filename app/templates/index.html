@@ -13,11 +13,17 @@
 <br><br>
 #}
 
+        
 <h3>Fast links</h3>
 
 <a class="btn btn-success" href="/tasks/1">deploy mos</a> |
 <a class="btn btn-danger" href="/tasks/2">clean mos</a><br>
 <br>
+
+<p>
+    <b>Servers all:</b> {{ stats.all }} (on:{{ stats.on }}/off:{{ stats.off }})
+    <b>Possible envs:</b> {{ stats.all_tasks}} <b>Current envs:</b> {{ stats.cur_tasks}} <b>Available for new:</b> {{ stats.free_tasks }}
+</p>
 
 {% if run_list %}
     <h3>Your runs</h3>

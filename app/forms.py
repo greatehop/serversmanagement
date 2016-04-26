@@ -72,9 +72,7 @@ class TaskDeployMOSForm(Form):
                                  default='4096')
     keep_days = IntegerField('keep_days',
                              default=settings.KEEP_DAYS,
-                             validators=[NumberRange(min=1)])
+                             validators=[NumberRange(min=0)])
 
 class TaskCleanMOSForm(Form):
     deploy_name = SelectField('deploy_name', coerce=int)
-
-#TODO: taskform for admin user ?

@@ -98,7 +98,7 @@ def tasks(task_id=None):
                     db.session.add(run)
                     db.session.commit()
 
-                    # execute run
+                    # execute task
                     core.run_task(task, server, run)
 
                     # mark existing run as removed
@@ -108,11 +108,8 @@ def tasks(task_id=None):
                     db.session.commit()
 
                     # decrease current number of tasks
-                    db.session.query(models.Server).filter_by(
-                        id=exist_run.server_id).update(
-                        {'cur_tasks': models.Server.cur_tasks-1})
-                    db.session.commit()
-
+                    core.update_server({'id': exist_run.server_id}, add=False)
+                    
                     return redirect('/runs')
             else:
                 form = None
@@ -127,12 +124,41 @@ def tasks(task_id=None):
 def runs(run_id=None):
 
     #TODO: pagination
-    #TODO: share run/task
+    #TODO: share run/task???
     #TODO: if run in q - update start_datetime
 
     if run_id is not None:
         run = models.Run.query.get(run_id)
-        return render_template('runs_details.html', run=run)
+        
+        form = forms.TaskCleanMOSForm()
+        form.deploy_name.choices = [(run.id, run.args['deploy_name'])]
+        if form.validate_on_submit():
+            
+            # get server from existing run
+            run_id = int(form.deploy_name.data)
+            exist_run = [i for i in run_list if i.id == run_id][0]
+
+            # save run to db
+            run = models.Run(
+                user_id=g.user.id, task_id=task_id,
+                args={'deploy_name': exist_run.args['deploy_name']},
+                start_datetime=datetime.utcnow())
+            db.session.add(run)
+            db.session.commit()
+
+            # execute task
+            core.run_task(task, server, run)
+
+            # mark existing run as removed
+            db.session.query(models.Run).filter_by(
+                id=exist_run.id).update(
+                {'state': settings.RUN_STATE['removed']})
+            db.session.commit()
+
+            # decrease current number of tasks
+            core.update_server({'id': exist_run.server_id}, add=False)
+                    
+        return render_template('runs_details.html', run=run, form=form)
     else:
         # show runs only with "done/in_progress/in_queue" states
         run_list = models.Run.query.filter(
@@ -201,15 +227,21 @@ def about():
 @app.route('/stats', strict_slashes=False)
 @login_required
 def stats():
+    cur_time = datetime.utcnow()
+    
     # get info who loaded servers
     server_list = models.Server.query.join(models.Run).join(
         models.User).join(models.Task).add_columns(models.Server.ip, 
         models.Server.alias, models.Server.state, models.Server.max_tasks,
-        models.Server.cur_tasks, models.User.name).filter(
+        models.Server.cur_tasks, models.User.name, models.Run.id).filter(
         models.Run.state == settings.RUN_STATE['done'],
         models.Run.task_id == 1).all()
-
-    return render_template('stats.html', server_list=server_list)
+    
+    # get servers state
+    stats = core.get_stats()
+    
+    return render_template('stats.html', server_list=server_list,
+                           cur_time=cur_time, stats=stats)
 
 @app.route('/users', strict_slashes=False)
 @app.route('/users/<int:user_id>',
@@ -253,7 +285,17 @@ def index():
     run_list = models.Run.query.order_by(
         desc(models.Run.id)).filter_by(
         user_id=g.user.id).limit(settings.LAST_RUNS).all()
-    return render_template('index.html', run_list=run_list)
+        
+    # get servers state
+    stats = core.get_stats()
+    
+    return render_template('index.html', run_list=run_list, stats=stats)
+
+@app.route('/kill/<int:pid>', methods=['POST'], strict_slashes=False)
+@login_required
+def kill(pid=None):
+    core.kill(int(pid)) 
+    return redirect('/runs')
 
 @app.route('/login', methods = ['GET', 'POST'], strict_slashes=False)
 @oid.loginhandler

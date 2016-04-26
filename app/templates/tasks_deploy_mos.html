@@ -51,27 +51,33 @@
 
     <tr>
         <td>
-            <b>Amount of memory on slave node:</b>
+            <b>Amount of memory on slave nodes:</b>
         </td>
-        <td>{{ form.slave_node_mem }}</td>
+        <td>
+            {{ form.slave_node_mem }}
+        </td>
     </tr>
-
+    
     {#
     <tr>
-        <td>Days to keep env:</td>
-        (env will be deleted after N days - <td>still not implemented yet</b>)<br>
-        {{ form.keep_days }}<br>
-
-        {% if form.keep_days.errors %}
-            <font color="red">{{ form.keep_days.errors | join(', ') }}</font>
-        {% endif %}
-    </p>
+        <td>
+            <b>Autodelete after N days:</b>
+            <br>(0 - unlimited)
+        </td>
+        <td>
+            {{ form.keep_days }} *
+    
+            {% if form.keep_days.errors %}<br>
+                <font color="red">{{ form.keep_days.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
     #}
-
+    
     <tr>
         <td>
             <b>Deployment name:</b><br>
-            (autogenerate from user+url, like: admin_9.0-123)
+            (<b>auto-generate</b> from user+url, like: <b>admin_9.0-123</b>)
         </td>
 
         <td>

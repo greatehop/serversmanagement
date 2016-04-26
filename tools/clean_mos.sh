@@ -2,8 +2,7 @@
 
 set +x
 
-PATH_MAIN="/home/jenkins"
-VENV_PATH="${PATH_MAIN}/sm_scripts/venv-mos"
+VENV_PATH="~/sm_scripts/venv-mos"
 
 source ${VENV_PATH}/bin/activate
 

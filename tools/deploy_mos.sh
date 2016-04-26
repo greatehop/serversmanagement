@@ -1,12 +1,12 @@
 #!/bin/bash
 
 set +x
+#set -e
 
-PATH_MAIN="/home/jenkins"
-PATH_DOWNLOADS_ISO="${PATH_MAIN}/sm_scripts/iso"
+PATH_DOWNLOADS_ISO="~/sm_scripts/iso"
 ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false --allow-piece-length-change=true"
-VENV_PATH="${PATH_MAIN}/sm_scripts/venv-mos"
-FUEL_QA_PATH="${PATH_MAIN}/sm_scripts/fuel-qa"
+VENV_PATH="~/sm_scripts/venv-mos"
+FUEL_QA_PATH="~/sm_scripts/fuel-qa"
 
 #export POOL_DEFAULT=10.177.0.0/16:24
 #export NODE_VOLUME_SIZE
@@ -33,6 +33,7 @@ function show_env_info() {
     dos.py net-list ${ENV_NAME}
     echo -e "\n"
     dos.py show ${ENV_NAME}
+    echo -e "\n"
 
     #get random not binded port
     while true; do SSH_PORT=$(shuf -i 5000-65000 -n 1); nc ${SERVER_IP} ${SSH_PORT} < /dev/null; if [[ $? -ne 0 ]]; then break; fi done
@@ -44,12 +45,18 @@ function show_env_info() {
     echo "sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}"
     sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
 
-    echo -e "\n"
-    echo "Fuel IP: ${FUEL_IP}"
-    echo -e "\n"
-    echo "<b>Fuel WebUI:</b> <a href='http://${SERVER_IP}:${FUEL_PORT}'>${SERVER_IP}:${FUEL_PORT}</a>"
-    echo -e "\n"
-    echo "<b>Fuel SSH:</b> ssh root@${SERVER_IP} -p ${SSH_PORT}"
+    if [[ "$?" -eq 0 ]]; then
+        echo -e "\n"
+        echo "Server IP: ${SERVER_IP}"
+        echo -e "\n"
+        echo "Fuel IP: ${FUEL_IP}"
+        echo -e "\n"
+        echo "<b>Fuel WebUI:</b> <a href='http://${SERVER_IP}:${FUEL_PORT}'>${SERVER_IP}:${FUEL_PORT}</a>"
+        echo -e "\n"
+        echo "<b>Fuel SSH:</b> ssh root@${SERVER_IP} -p ${SSH_PORT}"
+    else
+        echo "Something has gone wrong! Connect to server (ssh ${SERVER_IP}) and try to debug."
+    fi
 }
 
 ENV_NAME=${DEPLOYMENT_NAME}

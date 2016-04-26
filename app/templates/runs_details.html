@@ -5,12 +5,20 @@
     <script src="/static/js/socket.io.min.js"></script>
 
     <script type="text/javascript" charset="utf-8">
+
         $(document).ready(function(){
             var socket = io.connect('http://' + document.domain + ':' + location.port + '/run{{ run.id }}');
 
             socket.on('line', function(msg) {
                  $('#cmd_out').append('<br>' + $('<div/>').text(msg.data).html());
             });
+            
+            // update page info 
+            socket.on('stop', function(msg) {
+                //$("#loader").hide();
+                location.reload();
+            });
+
         });
     </script>
 
@@ -23,29 +31,48 @@
 {% block body %}
 
     {% if run %}
+    
+
         <div align="center"><h3>Run's info</h3><br>
 
         <table class="table table-hover table-striped table-bordered" style="max-width:30% !important; margin:0 auto !important;">
 
-            <tr align="center">
+            <tr>
                 <td><b>Run's ID</b></td>
                 <td> {{ run.id }} </td>
             </tr>
 
-            <tr align="center">
+            <tr>
                 <td><b>Task</b></td>
                 <td>{{ run.task.taskname }}</td>
             </tr>
 
-            <tr align="center">
+            <tr>
                 <td><b>State</b></td>
                 <td>
                   {% if run.state == '0' %}
                       <font color="orange">in_queue</font>
                   {% elif run.state == '1' %}
                       in_progress
+                  {#
+                      {% if g.user.is_admin or g.user.name == run.user.name %}
+                      <form action="/kill/{{ run.args.pid }}" method="post">
+                        <input class="btn btn-danger" type="submit" value="cancel">
+                      </form>
+                      {% endif %}
+                  #}    
                   {% elif run.state == '2' %}
                       <font color="green">done</font>
+                  {#    
+                      {% if run.task.taskname == "deploy_mos" %}
+                          {% if g.user.is_admin or g.user.name == run.user.name %}
+                          <form action="/run/{{run.id}}" method="post">
+                            {{ form.hidden_tag() }}
+                            <input class="btn btn-danger" type="submit" value="clean">
+                          </form>
+                          {% endif %}
+                      {% endif %}
+                  #}  
                   {% elif run.state == '3' %}
                       <font color="red">canceled</font>
                   {% else %}
@@ -53,7 +80,7 @@
                   {% endif %} </td>
             </tr>
 
-            <tr align="center">
+            <tr>
                 <td><b>Servers</b></td>
                 <td>
                     {% if run.server.id %}
@@ -64,21 +91,21 @@
                 </td>
             </tr>
 
-            <tr align="center">
+            <tr>
                 <td><b>User</b></td>
                 <td>
                     {{ run.user.name }}
                 </td>
             </tr>
 
-            <tr align="center">
+            <tr>
                 <td><b>Start date/time</b></td>
                 <td>
                     {{ run.start_datetime.strftime('%H:%M:%S %d.%m.%Y')}}
                 </td>
             </tr>
 
-            <tr align="center">
+            <tr>
                 <td><b>End date/time</b></td>
                 <td>
                     {% if run.end_datetime %}
@@ -89,7 +116,7 @@
                 </td>
             </tr>
 
-            <tr align="center">
+            <tr>
                 <td><b>Run's duration</b></td>
                 <td>
                     {% if run.end_datetime %}
@@ -103,33 +130,64 @@
         </table>
         <br>
 
+
         <h3>Task's arguments</h3>
         <br>
 
         {% if run.args %}
         <table class="table table-hover table-striped table-bordered" style="max-width:30% !important; margin:0 auto !important;">
-            {% for key, value in run.args.items() %}
+
             <tr>
-                <td><b>{{ key }}</b></td>
-                <td align="center">{{ value }}</td>
+                <td><b>deploy_name</b></td>
+                <td>{{ run.args.deploy_name }}</td>
             </tr>
-            {% endfor %}
+            
+            {% if run.task.taskname == "deploy_mos" %}
+            <tr>
+                <td><b>url</b></td>
+                <td>{{ run.args.iso_url }}</td>
+            </tr>
+            
+            <tr>
+                <td><b>nodes_count</b></td>
+                <td>{{ run.args.nodes_count }}</td>
+            </tr>
+            
+            <tr>
+                <td><b>slave_node_mem</b></td>
+                <td>{{ run.args.slave_node_mem }}</td>
+            </tr>
+            
+            <tr>
+                <td><b>slave_node_cpu</b></td>
+                <td>{{ run.args.slave_node_cpu }}</td>
+            </tr>
+            
+            <tr>
+                <td><b>keep_days</b></td>
+                <td>{{ run.args.keep_days }}</td>
+            </tr>
+            {% endif %}
+            
         </table>
         {% else %}
             None
         {% endif %}
         </div>
         <br>
-
+                
        <div align="center"><h3>Task's output</h3><br></div>
 
         {% if run.cmd_out %}
             <div align="left">
                 {{ run.cmd_out | safe }}
+
             </div>
             {% else %}
                 {% if run.state == '1' %}
-                    <div align="center" id='loader'><img src="/static/ico/loader.gif"/></div>
+                    <div id="loader" align="center">
+                        <img src="/static/ico/loader.gif"/>
+                    </div>
                 {% endif %}
                     <div align="left" id="cmd_out"></div>
                 {% endif %}

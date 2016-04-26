@@ -21,7 +21,7 @@ MAX_TASKS = 1
 
 # tasks args
 NODES_COUNT = 6
-KEEP_DAYS = 1
+KEEP_DAYS = 0
 
 # admin list
 # (needs only for first log in, manage by user -> is_admin)

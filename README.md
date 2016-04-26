@@ -111,8 +111,6 @@ virtualenv --system-site-packages venv-mos
 . ./venv-mos/bin/activate
 cd fuel-qa/
 pip install -r ./fuelweb_test/requirements.txt --upgrade
-
-scp ./tools/*_mos.sh user@server:~/sm_scripts/
 </pre>
 
 - run app

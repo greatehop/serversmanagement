@@ -8,31 +8,37 @@
     {% if server_list %}
         <h3>Servers state</h3>
 
+        <p><b>Current time/date:</b> {{ cur_time.strftime('%H:%M:%S %d.%m.%Y') }}</p>
+        <p>
+            <b>Servers all:</b> {{ stats.all }} (on:{{ stats.on }}/off:{{ stats.off }})
+            <b>Possible envs:</b> {{ stats.all_tasks}} <b>Current envs:</b> {{ stats.cur_tasks}} <b>Available for new:</b> {{ stats.free_tasks }}
+        </p>
+    
             <table class="table table-hover table-striped table-bordered table-center" style="max-width:50% !important; margin:0 auto !important;">
-
                 <tr>
                     <td><b>Server</b></td>
                     <td><b>IP</b></td>
                     <td><b>User</b></td>
+                    <td><b>RunID</b></td>
                     <td><b>Max tasks</b></td>
                     <td><b>Cur tasks</b></td>
                 </tr>
 
             {% for server in server_list %}
                 {% if not server.state %}
-            <tr class="error">
+                    <tr class="error">
                 {% elif server.max_tasks == server.cur_tasks %}
-            <tr class="warning">
+                    <tr class="warning">
                 {% else %}
-            <tr>
+                    <tr>
                 {% endif %}
-                        <td>{{ server.alias }}</td>
-                        <td>{{ server.ip }}</td>
-                        <td>{{ server.name }}</td>
-                        <td>{{ server.max_tasks }}</td>
-                        <td>{{ server.cur_tasks }}</td>
+                    <td>{{ server.alias }}</td>
+                    <td>{{ server.ip }}</td>
+                    <td>{{ server.name }}</td>
+                    <td><a href="/runs/{{ server.id }}">#{{ server.id }}</a></td>
+                    <td>{{ server.max_tasks }}</td>
+                    <td>{{ server.cur_tasks }}</td>
                 </tr>
-
             {% endfor %}
 
             </table>

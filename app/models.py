@@ -43,7 +43,6 @@ class Server(db.Model):
     alias = db.Column(db.String(120), index=True)
     state = db.Column(db.SmallInteger, default=settings.SERVER_STATE['on'])
     runs = db.relationship('Run', backref='server', lazy='dynamic')
-    #TODO: add user/pass (user default=settings.ssh_user), ssh_port default=22
     max_tasks = db.Column(db.Integer, default=settings.MAX_TASKS)
     cur_tasks = db.Column(db.Integer, default=0)
 
@@ -67,7 +66,8 @@ class Run(db.Model):
     state = db.Column(db.String(15), default=settings.RUN_STATE['in_queue'])
     cmd_out = db.Column(db.Text, default=None)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
-    server_id = db.Column(db.Integer, db.ForeignKey('server.id'), default=None)
+    server_id = db.Column(db.Integer, db.ForeignKey('server.id'),
+                          default=None)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     end_datetime = db.Column(db.DateTime, default=None)
     start_datetime = db.Column(db.DateTime)
