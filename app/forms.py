@@ -9,9 +9,7 @@ from wtforms.validators import Required, IPAddress, NumberRange, \
 
 
 class UniqueValidator(object):
-    """
-    validator that checks field uniqueness
-    """
+    """validator that checks field uniqueness"""
 
     def __init__(self, model, field, message=None):
         self.model = model
@@ -21,7 +19,7 @@ class UniqueValidator(object):
         self.message = message
 
     def __call__(self, form, field):
-        existing = self.model.query.filter(self.field==field.data).first()
+        existing = self.model.query.filter(self.field == field.data).first()
         try:
             id = int(form.id.data)
         except:
@@ -29,16 +27,19 @@ class UniqueValidator(object):
         if existing and (id is None or id != existing.id):
             raise ValidationError(self.message)
 
-class LoginForm(Form): pass
+
+class LoginForm(Form):
+    pass
+
 
 class ServerForm(Form):
     id = HiddenField('id')
-    ip = TextField('ip',
-        validators=[IPAddress(), UniqueValidator(
-            models.Server, models.Server.ip,
-            'There is already server with that IP')])
-    alias = TextField('alias',
-        validators=[Required(), UniqueValidator(
+    ip = TextField('ip', validators=[IPAddress(),
+                                     UniqueValidator(
+          models.Server, models.Server.ip,
+          'There is already server with that IP')])
+    alias = TextField('alias', validators=[Required(),
+                                           UniqueValidator(
             models.Server, models.Server.alias,
             'There is already server with that alias')])
     is_active = BooleanField('is_active', default=True)
@@ -46,9 +47,11 @@ class ServerForm(Form):
                              default=settings.MAX_TASKS,
                              validators=[NumberRange(min=1)])
 
+
 class UserForm(Form):
     is_admin = BooleanField('is_admin', default=False)
     is_active = BooleanField('is_active', default=True)
+
 
 class TaskDeployMOSForm(Form):
     deploy_name = TextField('deploy_name', validators=[])
@@ -73,6 +76,7 @@ class TaskDeployMOSForm(Form):
     keep_days = IntegerField('keep_days',
                              default=settings.KEEP_DAYS,
                              validators=[NumberRange(min=0)])
+
 
 class TaskCleanMOSForm(Form):
     deploy_name = SelectField('deploy_name', coerce=int)

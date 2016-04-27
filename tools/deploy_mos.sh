@@ -53,8 +53,9 @@ function show_env_info() {
         echo "Fuel IP: ${FUEL_IP}"
         echo -e "\n"
         echo "<b>Fuel WebUI:</b> <a href='http://${SERVER_IP}:${FUEL_PORT}'>${SERVER_IP}:${FUEL_PORT}</a>"
-        echo -e "\n"
+        echo -e "\nuser/pass: admin/admin\n"
         echo "<b>Fuel SSH:</b> ssh root@${SERVER_IP} -p ${SSH_PORT}"
+        echo -e "\nuser/pass: root/r00tme\n"
     else
         echo "<b>Something has gone wrong! Connect to server (ssh ${SERVER_IP}) and try to debug.</b>"
     fi
@@ -75,6 +76,9 @@ cd ${FUEL_QA_PATH}
 ./utils/jenkins/system_tests.sh -t test -w $(pwd) -j fuelweb_test -i ${ISO_PATH} -e ${ENV_NAME} -o --group=setup -V ${VENV_PATH}
 
 dos.py start ${ENV_NAME}
+
+# wait while nodes is boot
+sleep 60
 
 # show fuel info
 FUEL_ADM_IP=$(virsh net-dumpxml ${ENV_NAME}_admin | grep -oP '(\d+\.){3}' | awk '{print $0"2"}')

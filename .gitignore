@@ -1,6 +1,7 @@
 *.pyc
 .pydevproject
 .project
+.tox/
 db_repository/
 tmp/
 venv/

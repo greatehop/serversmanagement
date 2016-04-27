@@ -4,21 +4,21 @@ from app import app, db, forms, models, lm, oid
 
 import re
 from datetime import datetime
-from flask import Flask, render_template, redirect, request, \
-                  session, request, g
+from flask import render_template, redirect, request, \
+                  session, g
 from flask.ext.login import login_user, logout_user, \
                             current_user, login_required
 from sqlalchemy import desc
 
 
 @app.route('/tasks', strict_slashes=False)
-@app.route('/tasks/<int:task_id>',
-           methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/tasks/<int:task_id>', methods=['GET', 'POST'],
+           strict_slashes=False)
 @login_required
 def tasks(task_id=None):
-    #TODO: refactor tasks as plugins
+    # TODO: refactor tasks as plugins
 
-    #TODO: add "run again with the same arguments"
+    # TODO: add "run again with the same arguments"
 
     task_list = models.Task.query.all()
     if task_id is not None:
@@ -32,8 +32,8 @@ def tasks(task_id=None):
             if form.validate_on_submit():
                 # get or generate deployment name
                 if form.deploy_name.data:
-                    deploy_name = '%s_%s' % (g.user.name, 
-                                             form.deploy_name.data)
+                    deploy_name = '%s_%s' % (
+                        g.user.name, form.deploy_name.data)
                 else:
                     ver = re.findall('fuel\-(\d+\.\d+\-\d+)',
                                      form.iso_url.data)
@@ -109,31 +109,32 @@ def tasks(task_id=None):
 
                     # decrease current number of tasks
                     core.update_server({'id': exist_run.server_id}, add=False)
-                    
+
                     return redirect('/runs')
             else:
                 form = None
         return render_template('tasks_clean_mos.html',
-                                task=task, form=form)
+                               task=task, form=form)
     else:
         return render_template('tasks.html', task_list=task_list)
+
 
 @app.route('/runs', methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/runs/<int:run_id>', strict_slashes=False)
 @login_required
 def runs(run_id=None):
 
-    #TODO: pagination
-    #TODO: share run/task???
-    #TODO: if run in q - update start_datetime
+    # TODO: pagination
+    # TODO: share run/task???
+    # TODO: if run in q - update start_datetime
 
     if run_id is not None:
         run = models.Run.query.get(run_id)
-        
+
         form = forms.TaskCleanMOSForm()
         form.deploy_name.choices = [(run.id, run.args['deploy_name'])]
+        """
         if form.validate_on_submit():
-            
             # get server from existing run
             run_id = int(form.deploy_name.data)
             exist_run = [i for i in run_list if i.id == run_id][0]
@@ -157,7 +158,7 @@ def runs(run_id=None):
 
             # decrease current number of tasks
             core.update_server({'id': exist_run.server_id}, add=False)
-                    
+        """
         return render_template('runs_details.html', run=run, form=form)
     else:
         # show runs only with "done/in_progress/in_queue" states
@@ -167,18 +168,19 @@ def runs(run_id=None):
             desc(models.Run.id)).limit(settings.LAST_RUNS).all()
         return render_template('runs.html', run_list=run_list)
 
+
 @app.route('/servers', methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/servers/<int:server_id>',
            methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def servers(server_id=None):
-    #TODO: add delete
+    # TODO: add delete
 
-    #TODO: block delete/disable if server has taks/runs
-    #Server.query.filter_by(id=server_id).delete()
+    # TODO: block delete/disable if server has taks/runs
+    # Server.query.filter_by(id=server_id).delete()
 
-    #TODO: add test ssh connection
-    
+    # TODO: add test ssh connection
+
     if not g.user.is_admin:
         return render_template('404.html')
 
@@ -220,37 +222,41 @@ def servers(server_id=None):
             return render_template('servers.html',
                                    server_list=server_list, form=form)
 
+
 @app.route('/about', strict_slashes=False)
 def about():
     return render_template('about.html')
+
 
 @app.route('/stats', strict_slashes=False)
 @login_required
 def stats():
     cur_time = datetime.utcnow()
-    
+
     # get info who loaded servers
     server_list = models.Server.query.join(models.Run).join(
-        models.User).join(models.Task).add_columns(models.Server.ip, 
-        models.Server.alias, models.Server.state, models.Server.max_tasks,
-        models.Server.cur_tasks, models.User.name, models.Run.id).filter(
-        models.Run.state == settings.RUN_STATE['done'],
-        models.Run.task_id == 1).all()
-    
+                  models.User).join(models.Task).add_columns(
+                  models.Server.ip, models.Server.alias, models.Server.state,
+                  models.Server.max_tasks, models.Server.cur_tasks,
+                  models.User.name, models.Run.id).filter(
+                  models.Run.state == settings.RUN_STATE['done'],
+                  models.Run.task_id == 1).all()
+
     # get servers state
     stats = core.get_stats()
-    
+
     return render_template('stats.html', server_list=server_list,
                            cur_time=cur_time, stats=stats)
 
+
 @app.route('/users', strict_slashes=False)
-@app.route('/users/<int:user_id>',
-           methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/users/<int:user_id>', methods=['GET', 'POST'],
+           strict_slashes=False)
 @login_required
 def users(user_id=None):
-    #TODO: change way to log in
+    # TODO: change way to log in
 
-    #TODO: add info about admin user in settings
+    # TODO: add info about admin user in settings
 
     if not g.user.is_admin:
         return render_template('404.html')
@@ -273,10 +279,10 @@ def users(user_id=None):
             return render_template('users_details.html',
                                    user=user, form=form)
     else:
-        state_on = settings.USER_STATE['on']
         user_list = models.User.query.all()
         return render_template('users.html',
                                user_list=user_list, form=form)
+
 
 @app.route('/', strict_slashes=False)
 @app.route('/index', strict_slashes=False)
@@ -285,19 +291,21 @@ def index():
     run_list = models.Run.query.order_by(
         desc(models.Run.id)).filter_by(
         user_id=g.user.id).limit(settings.LAST_RUNS).all()
-        
+
     # get servers state
     stats = core.get_stats()
-    
+
     return render_template('index.html', run_list=run_list, stats=stats)
+
 
 @app.route('/kill/<int:pid>', methods=['POST'], strict_slashes=False)
 @login_required
 def kill(pid=None):
-    core.kill(int(pid)) 
+    core.kill(int(pid))
     return redirect('/runs')
 
-@app.route('/login', methods = ['GET', 'POST'], strict_slashes=False)
+
+@app.route('/login', methods=['GET', 'POST'], strict_slashes=False)
 @oid.loginhandler
 def login():
     if g.user is not None and g.user.is_authenticated:
@@ -310,18 +318,22 @@ def login():
     return render_template('login.html', form=form,
                            providers=settings.OPENID['launchpad']['url'])
 
+
 @app.route('/logout', strict_slashes=False)
 def logout():
     logout_user()
     return redirect('/login')
 
+
 @lm.user_loader
 def load_user(id):
     return models.User.query.get(int(id))
 
+
 @app.before_request
 def before_request():
     g.user = current_user
+
 
 @oid.after_login
 def after_login(resp):
@@ -343,12 +355,12 @@ def after_login(resp):
     login_user(user, remember=remember_me)
     return redirect(request.args.get('next') or '/index')
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
 @app.errorhandler(Exception)
 def internal_error(e):
     return render_template('500.html'), 500
-
-#TODO: add update keep days

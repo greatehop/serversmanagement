@@ -30,12 +30,13 @@ class User(db.Model):
 
     def get_id(self):
         try:
-            return unicode(self.id) # python 2
+            return unicode(self.id)  # python 2
         except NameError:
-            return str(self.id) # python 3
+            return str(self.id)  # python 3
 
     def __repr__(self):
         return '<User %r>' % (self.name)
+
 
 class Server(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,6 +50,7 @@ class Server(db.Model):
     def __repr__(self):
         return '<Server %r>' % (self.alias)
 
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(15), index=True, unique=True)
@@ -61,6 +63,7 @@ class Task(db.Model):
     def __repr__(self):
         return '<Task %r>' % (self.name)
 
+
 class Run(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     state = db.Column(db.String(15), default=settings.RUN_STATE['in_queue'])
@@ -71,5 +74,5 @@ class Run(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     end_datetime = db.Column(db.DateTime, default=None)
     start_datetime = db.Column(db.DateTime)
-    #TODO: to get rid of PickleType
+    # TODO: to get rid of PickleType
     args = db.Column(db.PickleType, default=None)

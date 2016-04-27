@@ -15,9 +15,7 @@ lock = Lock()
 
 
 class ReadWriteStream(object):
-    """
-    console output reader/writer
-    """
+    """console output reader/writer"""
 
     def __init__(self, stream, run_id):
         self.stream = stream
@@ -28,14 +26,14 @@ class ReadWriteStream(object):
                 line = stream.readline()
                 if line:
                     # send line to client
-                    socketio.emit('line', {'data': line },
+                    socketio.emit('line', {'data': line},
                                   namespace='/run%s' % run_id)
 
                     data.append(line)
                 else:
                     # "convert" console nextline (\n) to html nextline (<br>)
                     cmd_out = '<br>'.join([i for i in data])
-                    
+
                     # update run - set cmd_out, run_state and end_datetime
                     run_state = settings.RUN_STATE['done']
                     end_datetime = datetime.utcnow()
@@ -44,7 +42,7 @@ class ReadWriteStream(object):
                          'end_datetime': end_datetime,
                          'cmd_out': cmd_out})
                     db.session.commit()
-                    
+
                     # "singnal" for force page update
                     socketio.emit('stop', namespace='/run%s' % run_id)
 
@@ -54,10 +52,9 @@ class ReadWriteStream(object):
         self.t.daemon = True
         self.t.start()
 
+
 class Scheduler(Thread):
-    """
-    daemon for execute runs in queue
-    """
+    """daemon for execute runs in queue"""
 
     def __init__(self):
         Thread.__init__(self)
@@ -77,38 +74,40 @@ class Scheduler(Thread):
                         run_task(task, server, run)
                     else:
                         break
-            
+
             """
             # delete old envs
             filter2 = {'state': settings.RUN_STATE['done'], 'task_id': 1}
             runs_for_del = models.Run.query.order_by(
                 models.Run.id).filter_by(**filter2).all()
-             
+
             for run in runs_for_del:
                 keep_days = int(run.args['keep_days'])
                 if keep_days:
                     cur_time = datetime.utcnow()
-                    judgment_day = timedelta(minutes=keep_days)+run.end_datetime
+                    judgment_day = run.end_datetime + timedelta(
+                        minutes=keep_days)
                     if cur_time >= judgment_day:
                         # execute run
                         task = models.Task.query.get(2)
                         server = models.Server.query.get(run.server_id)
                         run_task(task, server, run)
-        
+
                         # mark existing run as removed
                         db.session.query(models.Run).filter_by(
                             id=run.id).update(
                             {'state': settings.RUN_STATE['removed']})
                         db.session.commit()
-                                
+
                         # decrease current number of tasks
                         update_server({'id': run.server_id}, add=False)
             """
-            
+
             # forse close transaction
             db.session.commit()
-             
+
             sleep(settings.DAEMON_TIMEOUT)
+
 
 def get_server():
     """
@@ -129,6 +128,7 @@ def get_server():
         except ValueError:
             return None
 
+
 def run_task(task, server, run):
     """
     execute task (fabric file) and save console output in background
@@ -138,7 +138,7 @@ def run_task(task, server, run):
         -H <ip> <taskname>[:key1=val1,keyN=valN]
     """
 
-    #TODO: use fabric API?
+    # TODO: use fabric API?
     cmd = 'fab --fabfile=%s -u %s -H %s %s' % (
         task.taskfile, settings.SSH_USER, server.ip, task.taskname)
 
@@ -151,7 +151,7 @@ def run_task(task, server, run):
 
     if settings.DEBUG:
         print cmd
-    
+
     # run command and write output to web/db in background
     process = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE,
                     shell=True, preexec_fn=os.setsid)
@@ -165,8 +165,9 @@ def run_task(task, server, run):
     db.session.query(models.Run).filter_by(id=run.id).update(
         {'state': run_state, 'server_id': server.id, 'args': args})
     db.session.commit()
-    
-#TODO: move to models???
+
+
+# TODO: move to models???
 def update_server(filter, add=True):
     """ increase/decrease current number of tasks"""
     val = 1
@@ -176,15 +177,17 @@ def update_server(filter, add=True):
         {'cur_tasks': models.Server.cur_tasks + val})
     db.session.commit()
 
+
 def kill(pid):
     try:
         os.killpg(os.getpgid(pid), signal.SIGTERM)
-        #TODO: update state: 'canceled', decreace server num, 
+        # TODO: update state: 'canceled', decrease server number
     except:
         pass
 
+
 def get_stats():
-    stats = {'all': 0, 'all_tasks': 0, 'on': 0, 'off': 0, 
+    stats = {'all': 0, 'all_tasks': 0, 'on': 0, 'off': 0,
              'cur_tasks': 0, 'loaded': 0, 'free_tasks': 0}
     for server in models.Server.query.all():
         if server.state == settings.SERVER_STATE['off']:
