@@ -169,10 +169,8 @@ def run_task(task, server, run):
 #TODO: move to models???
 def update_server(filter, add=True):
     """ increase/decrease current number of tasks"""
-    
-    if add:
-        val = 1
-    else:
+    val = 1
+    if not add:
         val = -1
     db.session.query(models.Server).filter_by(**filter).update(
         {'cur_tasks': models.Server.cur_tasks + val})
@@ -188,16 +186,17 @@ def kill(pid):
 def get_stats():
     stats = {'all': 0, 'all_tasks': 0, 'on': 0, 'off': 0, 
              'cur_tasks': 0, 'loaded': 0, 'free_tasks': 0}
-    
     for server in models.Server.query.all():
         if server.state == settings.SERVER_STATE['off']:
             stats['off'] += 1
+            stats['free_tasks'] -= server.max_tasks
+            stats['all_tasks'] -= int(server.max_tasks)
         if server.state == settings.SERVER_STATE['on']:
             stats['on'] += 1
+            stats['all_tasks'] += int(server.max_tasks)
         if server.max_tasks == server.cur_tasks:
             stats['loaded'] += 1
         stats['all'] += 1
-        stats['all_tasks'] += int(server.max_tasks)
         stats['cur_tasks'] += int(server.cur_tasks)
-    stats['free_tasks'] = stats['all_tasks'] - stats['cur_tasks']
+    stats['free_tasks'] += stats['all_tasks'] - stats['cur_tasks']
     return stats

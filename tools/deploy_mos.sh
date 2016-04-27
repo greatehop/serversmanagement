@@ -3,10 +3,11 @@
 set +x
 #set -e
 
-PATH_DOWNLOADS_ISO="~/sm_scripts/iso"
+PATH_MAIN="/home/jenkins"
+PATH_DOWNLOADS_ISO="${PATH_MAIN}/sm_scripts/iso"
 ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false --allow-piece-length-change=true"
-VENV_PATH="~/sm_scripts/venv-mos"
-FUEL_QA_PATH="~/sm_scripts/fuel-qa"
+VENV_PATH="${PATH_MAIN}/sm_scripts/venv-mos"
+FUEL_QA_PATH="${PATH_MAIN}/sm_scripts/fuel-qa"
 
 #export POOL_DEFAULT=10.177.0.0/16:24
 #export NODE_VOLUME_SIZE
@@ -55,7 +56,7 @@ function show_env_info() {
         echo -e "\n"
         echo "<b>Fuel SSH:</b> ssh root@${SERVER_IP} -p ${SSH_PORT}"
     else
-        echo "Something has gone wrong! Connect to server (ssh ${SERVER_IP}) and try to debug."
+        echo "<b>Something has gone wrong! Connect to server (ssh ${SERVER_IP}) and try to debug.</b>"
     fi
 }
 

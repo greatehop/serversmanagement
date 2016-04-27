@@ -5,14 +5,15 @@
 {% block body %}
 
 <div align="center">
-    {% if server_list %}
-        <h3>Servers state</h3>
+    <h3>Servers state</h3>
 
-        <p><b>Current time/date:</b> {{ cur_time.strftime('%H:%M:%S %d.%m.%Y') }}</p>
-        <p>
-            <b>Servers all:</b> {{ stats.all }} (on:{{ stats.on }}/off:{{ stats.off }})
-            <b>Possible envs:</b> {{ stats.all_tasks}} <b>Current envs:</b> {{ stats.cur_tasks}} <b>Available for new:</b> {{ stats.free_tasks }}
-        </p>
+    <p><b>Current time/date:</b> {{ cur_time.strftime('%H:%M:%S %d.%m.%Y') }}</p>
+    <p>
+        <b>Servers all:</b> {{ stats.all }} (on:{{ stats.on }}/off:{{ stats.off }})
+        <b>Possible envs:</b> {{ stats.all_tasks}} <b>Current envs:</b> {{ stats.cur_tasks}} 
+        {# <b>Possible new envs:</b> {{ stats.free_tasks }} #}
+    </p>
+    {% if server_list %}
     
             <table class="table table-hover table-striped table-bordered table-center" style="max-width:50% !important; margin:0 auto !important;">
                 <tr>
