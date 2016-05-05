@@ -6,9 +6,11 @@ set +x
 PATH_MAIN="/home/jenkins"
 PATH_DOWNLOADS_ISO="${PATH_MAIN}/sm_scripts/iso"
 ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false --allow-piece-length-change=true"
-VENV_PATH="${PATH_MAIN}/sm_scripts/venv-mos"
+VENV_PATH="${PATH_MAIN}/sm_scripts/${VENV}"
 FUEL_QA_PATH="${PATH_MAIN}/sm_scripts/fuel-qa"
 
+#IRONIC_ENABLED=true
+#IRONIC_NODES_COUNT=1
 #export POOL_DEFAULT=10.177.0.0/16:24
 #export NODE_VOLUME_SIZE
 
@@ -77,7 +79,7 @@ cd ${FUEL_QA_PATH}
 
 dos.py start ${ENV_NAME}
 
-# wait while nodes is boot
+# wait while nodes are booted
 sleep 60
 
 # show fuel info

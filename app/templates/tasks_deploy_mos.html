@@ -76,8 +76,8 @@
     
     <tr>
         <td>
-            <b>Deployment name:</b><br>
-            (<b>auto-generate</b> from user+url, like: <b>admin_9.0-123</b>)
+            <b>Deployment name:</b> <font color="orange">(optional)</font><br>
+            (<b>auto-generated</b> from user+url, like: <b>admin_9.0-123</b>)
         </td>
 
         <td>
@@ -88,7 +88,17 @@
             {% endif %}
         </td>
     </tr>
+    {#
+    <tr>
+        <td>
+            <b>Additional options:</b> <font color="orange">(optional)</font><br>
+            (delimited by semicolon, like: <font size="1">IRONIC_ENABLED=true; IRONIC_NODES_COUNT=1</font>)
+        </td>
 
+        <td>
+        </td>
+    </tr>
+    #}
     </table>
     <br><p><input class="btn btn-success" type="submit" value="deploy"></p>
     </form>

@@ -11,6 +11,9 @@ from flask.ext.login import login_user, logout_user, \
 from sqlalchemy import desc
 
 
+fuel_ver = re.compile('(?:fuel|MirantisOpenStack)\-(\d+\.\d+(?:\-\d+)?)')
+
+
 @app.route('/tasks', strict_slashes=False)
 @app.route('/tasks/<int:task_id>', methods=['GET', 'POST'],
            strict_slashes=False)
@@ -29,16 +32,19 @@ def tasks(task_id=None):
 
         if task.name == 'deploy_mos':
             form = forms.TaskDeployMOSForm()
+
             if form.validate_on_submit():
-                # get or generate deployment name
+                # get or generate deployment name and mos version
+                venv = 'venv-mos'
                 if form.deploy_name.data:
                     deploy_name = '%s_%s' % (
                         g.user.name, form.deploy_name.data)
                 else:
-                    ver = re.findall('fuel\-(\d+\.\d+\-\d+)',
-                                     form.iso_url.data)
+                    ver = fuel_ver.findall(form.iso_url.data)
                     if ver:
                         iso = ver[0]
+                        if iso[0] in ['6', '7', '8']:
+                            venv += iso[0]
                     else:
                         iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
                     deploy_name = '%s_%s' % (g.user.name, iso)
@@ -53,7 +59,8 @@ def tasks(task_id=None):
                           'nodes_count': form.nodes_count.data,
                           'slave_node_cpu': form.slave_node_cpu.data,
                           'slave_node_mem': form.slave_node_mem.data,
-                          'keep_days': form.keep_days.data})
+                          'keep_days': form.keep_days.data,
+                          'venv': venv})
                 db.session.add(run)
                 db.session.commit()
 
@@ -169,16 +176,28 @@ def runs(run_id=None):
         return render_template('runs.html', run_list=run_list)
 
 
+@app.route('/servers/del/<int:server_id>', methods=['POST'],
+           strict_slashes=False)
+@login_required
+def servers_del(server_id=None):
+    if not g.user.is_admin:
+        return render_template('404.html')
+
+    # TODO: block delete if server has runs
+    db.session.execute(models.Run.__table__.delete().where(
+        models.Run.server_id == server_id))
+    db.session.query(models.Server).filter_by(
+        id=int(server_id)).delete()
+    db.session.commit()
+
+    return redirect('/servers')
+
+
 @app.route('/servers', methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/servers/<int:server_id>',
            methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def servers(server_id=None):
-    # TODO: add delete
-
-    # TODO: block delete/disable if server has taks/runs
-    # Server.query.filter_by(id=server_id).delete()
-
     # TODO: add test ssh connection
 
     if not g.user.is_admin:

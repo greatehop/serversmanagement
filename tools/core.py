@@ -7,8 +7,7 @@ from subprocess import Popen, PIPE
 from threading import Thread, Lock
 from time import sleep
 import random
-from datetime import datetime, timedelta
-from flask.ext.socketio import SocketIO, emit
+from datetime import datetime
 
 
 lock = Lock()
@@ -43,8 +42,9 @@ class ReadWriteStream(object):
                          'cmd_out': cmd_out})
                     db.session.commit()
 
-                    # "singnal" for force page update
+                    # send "singnal" for force page update
                     socketio.emit('stop', namespace='/run%s' % run_id)
+                    socketio.emit('stop', namespace='/runs')
 
                     break
 
@@ -117,7 +117,7 @@ def get_server():
     with lock:
         filter = {'state': settings.SERVER_STATE['on']}
         server_list = models.Server.query.filter_by(**filter).all()
-        tmp_list = [{'id': s, 'weight': int(s.max_tasks)-int(s.cur_tasks)}
+        tmp_list = [{'id': s, 'weight': int(s.max_tasks) - int(s.cur_tasks)}
                     for s in server_list if int(s.max_tasks)-int(s.cur_tasks)]
         random.shuffle(tmp_list)
         try:
@@ -138,7 +138,6 @@ def run_task(task, server, run):
         -H <ip> <taskname>[:key1=val1,keyN=valN]
     """
 
-    # TODO: use fabric API?
     cmd = 'fab --fabfile=%s -u %s -H %s %s' % (
         task.taskfile, settings.SSH_USER, server.ip, task.taskname)
 

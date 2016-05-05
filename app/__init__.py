@@ -3,7 +3,7 @@ from flask import Flask
 from flask.ext.login import LoginManager
 from flask.ext.openid import OpenID
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.socketio import SocketIO, emit
+from flask.ext.socketio import SocketIO
 
 try:
     import eventlet

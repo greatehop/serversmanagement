@@ -62,15 +62,12 @@
             {% if g.user.is_authenticated %}
                 Logged in as <a href="/" >{{ g.user.name }}</a> |
                 <a href="/logout">Logout</a>
-                {% else %}
+            {% else %}
                 <a href="/login">Sign in</a>
-           {% endif %}
+            {% endif %}
             </p>
 
             <ul class="nav">
-              {% if g.user.is_authenticated %}
-              <li><a href="/index">Home</a></li>
-              {% endif %}
               <li><a href="/about">About</a></li>
             </ul>
           </div>

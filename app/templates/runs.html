@@ -1,7 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Runs{% endblock %}
+{% block js %}
 
+    <script src="/static/js/socket.io.min.js"></script>
+
+    <script type="text/javascript" charset="utf-8">
+
+        $(document).ready(function(){
+            var socket = io.connect('http://' + document.domain + ':' + location.port + '/runs');
+                        
+            // forse update page info 
+            socket.on('stop', function(msg) {
+                location.reload();
+            });
+
+        });
+    </script>
+    
+{% endblock %}
+
+{% block title %}Runs{% endblock %}
+    
 {% block body %}
 
 <div align="center">
