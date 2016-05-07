@@ -105,12 +105,38 @@ apt-get update
 apt-get install aria2 sshpass
 
 mkdir -p ~/sm_scripts/iso
-cd sm_scripts/
-git clone https://github.com/openstack/fuel-qa
+
+cd ~/sm_scripts/
 virtualenv --system-site-packages venv-mos
+git clone http://github.com/openstack/fuel-qa ./venv-mos/fuel-qa
 . ./venv-mos/bin/activate
-cd fuel-qa/
+cd ./venv-mos/fuel-qa/
 pip install -r ./fuelweb_test/requirements.txt --upgrade
+deactivate
+
+cd ~/sm_scripts/
+virtualenv --system-site-packages venv-mos8
+git clone -b stable/8.0 http://github.com/openstack/fuel-qa ./venv-mos8/fuel-qa
+. ./venv-mos8/bin/activate
+cd ./venv-mos8/fuel-qa/
+pip install -r ./fuelweb_test/requirements.txt --upgrade
+deactivate
+
+cd ~/sm_scripts/
+virtualenv --system-site-packages venv-mos7
+git clone -b stable/7.0 http://github.com/openstack/fuel-qa ./venv-mos7/fuel-qa
+. ./venv-mos7/bin/activate
+cd ./venv-mos7/fuel-qa/
+pip install -r ./fuelweb_test/requirements.txt --upgrade
+deactivate
+
+cd ~/sm_scripts/
+virtualenv --system-site-packages venv-mos6.1
+git clone -b stable/6.1 http://github.com/openstack/fuel-qa ./venv-mos6.1/fuel-qa
+. ./venv-mos6.1/bin/activate
+cd ./venv-mos6.1/fuel-qa/
+pip install -r ./fuelweb_test/requirements.txt --upgrade
+deactivate
 </pre>
 
 - run app
