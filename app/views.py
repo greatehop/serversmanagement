@@ -11,7 +11,7 @@ from flask.ext.login import login_user, logout_user, \
 from sqlalchemy import desc
 
 
-fuel_ver = re.compile('(?:fuel|MirantisOpenStack)\-(\d+\.\d+(?:\-\d+)?)')
+fuel_ver = re.compile('(?:fuel|MirantisOpenStack)\-((\d+\.\d+)(?:\-\d+)?)')
 
 
 @app.route('/tasks', strict_slashes=False)
@@ -43,8 +43,7 @@ def tasks(task_id=None):
                     ver = fuel_ver.findall(form.iso_url.data)
                     if ver:
                         iso = ver[0]
-                        if iso[0] in ['6', '7', '8']:
-                            venv += iso[0]
+                        venv += ver[1]
                     else:
                         iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
                     deploy_name = '%s_%s' % (g.user.name, iso)
