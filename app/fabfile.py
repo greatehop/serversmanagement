@@ -13,7 +13,7 @@ def verify_ssh():
 def deploy_mos(**kwargs):
     """Task "deploy_mos" for deploy Fuel node"""
     put('tools/deploy_mos.sh', '~/sm_scripts/', mode=0755)
-    with shell_env(SLAVE_NODE_MEMORY=kwargs['slave_node_mem'],
+    with shell_env(SLAVE_NODE_MEMORY=kwargs['slave_node_memory'],
                    SLAVE_NODE_CPU=kwargs['slave_node_cpu'],
                    NODES_COUNT=kwargs['nodes_count'],
                    DEPLOYMENT_NAME=kwargs['deploy_name'],

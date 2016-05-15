@@ -11,7 +11,7 @@ from flask.ext.login import login_user, logout_user, \
 from sqlalchemy import desc
 
 
-fuel_ver = re.compile('(?:fuel|MirantisOpenStack)\-((\d+\.\d+)(?:\-\d+)?)')
+fuel_ver = re.compile('(?:fuel|MirantisOpenStack)\-((\d+\.\d+)(?:(?:\-mos)?-\d+)?)')
 
 
 @app.route('/tasks', strict_slashes=False)
@@ -36,16 +36,18 @@ def tasks(task_id=None):
             if form.validate_on_submit():
                 # get or generate deployment name and mos version
                 venv = 'venv-mos'
+                ver = fuel_ver.findall(form.iso_url.data)
+                if ver:
+                    iso = ver[0][0]
+                    if ver[0][1] in ['6.1', '7.0', '8.0']:
+                        venv += ver[0][1]
+                else:
+                    iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')  
+
                 if form.deploy_name.data:
                     deploy_name = '%s_%s' % (
                         g.user.name, form.deploy_name.data)
                 else:
-                    ver = fuel_ver.findall(form.iso_url.data)
-                    if ver:
-                        iso = ver[0]
-                        venv += ver[1]
-                    else:
-                        iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
                     deploy_name = '%s_%s' % (g.user.name, iso)
 
                 # save run to db
@@ -57,7 +59,7 @@ def tasks(task_id=None):
                           'iso_url': form.iso_url.data,
                           'nodes_count': form.nodes_count.data,
                           'slave_node_cpu': form.slave_node_cpu.data,
-                          'slave_node_mem': form.slave_node_mem.data,
+                          'slave_node_memory': form.slave_node_memory.data,
                           'keep_days': form.keep_days.data,
                           'venv': venv})
                 db.session.add(run)

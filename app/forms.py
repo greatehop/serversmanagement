@@ -66,13 +66,13 @@ class TaskDeployMOSForm(Form):
                                           ('2', '2'),
                                           ('4', '4')],
                                  default='1')
-    slave_node_mem = SelectField('slave_node_mem',
-                                 validators=[],
-                                 choices=[('4096', '4096'),
-                                          ('3072', '3072'),
-                                          ('6144', '6144'),
-                                          ('8192', '8192')],
-                                 default='4096')
+    slave_node_memory = SelectField('slave_node_memory',
+                                    validators=[],
+                                    choices=[('4096', '4096'),
+                                             ('3072', '3072'),
+                                             ('6144', '6144'),
+                                             ('8192', '8192')],
+                                    default='4096')
     keep_days = IntegerField('keep_days',
                              default=settings.KEEP_DAYS,
                              validators=[NumberRange(min=0)])
