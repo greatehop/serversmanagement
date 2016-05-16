@@ -5,9 +5,9 @@ import os
 import signal
 from subprocess import Popen, PIPE
 from threading import Thread, Lock
-from time import sleep
-import random
 from datetime import datetime
+import random
+from time import sleep
 
 
 lock = Lock()
@@ -110,8 +110,8 @@ class Scheduler(Thread):
 
 
 def get_server():
-    """
-    get random and not loaded server (based on max/cur tasks in db) or None
+    """get random and not loaded server
+    (based on max/cur tasks in db) or None
     """
 
     with lock:
@@ -130,8 +130,7 @@ def get_server():
 
 
 def run_task(task, server, run):
-    """
-    execute task (fabric file) and save console output in background
+    """execute task (fabric file) and save console output in background
 
     example:
     fab --fabfile <fabfile> -u <user>
@@ -148,9 +147,6 @@ def run_task(task, server, run):
         vars += ',server_ip=%s' % server.ip
         cmd += ':%s' % vars
 
-    if settings.DEBUG:
-        print cmd
-
     # run command and write output to web/db in background
     process = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE,
                     shell=True, preexec_fn=os.setsid)
@@ -166,9 +162,9 @@ def run_task(task, server, run):
     db.session.commit()
 
 
-# TODO: move to models???
+# TODO(hop): move to models???
 def update_server(filter, add=True):
-    """ increase/decrease current number of tasks"""
+    """increase/decrease current number of tasks"""
     val = 1
     if not add:
         val = -1
@@ -180,8 +176,8 @@ def update_server(filter, add=True):
 def kill(pid):
     try:
         os.killpg(os.getpgid(pid), signal.SIGTERM)
-        # TODO: update state: 'canceled', decrease server number
-    except:
+        # TODO(hop): update state: 'canceled', decrease server number
+    except Exception:
         pass
 
 

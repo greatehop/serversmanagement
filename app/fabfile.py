@@ -18,7 +18,6 @@ def deploy_mos(**kwargs):
                    NODES_COUNT=kwargs['nodes_count'],
                    DEPLOYMENT_NAME=kwargs['deploy_name'],
                    ISO_URL=kwargs['iso_url'],
-                   KEEP_DAYS=kwargs['keep_days'],
                    SERVER_IP=kwargs['server_ip'],
                    VENV=kwargs['venv']):
         run('~/sm_scripts/deploy_mos.sh')
@@ -29,5 +28,5 @@ def clean_mos(**kwargs):
     """Task "clean_mos" for clean up Fuel node"""
     put('tools/clean_mos.sh', '~/sm_scripts/', mode=0755)
     with shell_env(DEPLOYMENT_NAME=kwargs['deploy_name'],
-                   VENV=kwargs['venv']):
+                   VENV=kwargs.get('venv', 'venv-mos')):
         run('~/sm_scripts/clean_mos.sh')

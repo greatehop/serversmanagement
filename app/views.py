@@ -2,8 +2,8 @@ import settings
 from tools import core
 from app import app, db, forms, models, lm, oid
 
-import re
 from datetime import datetime
+import re
 from flask import render_template, redirect, request, \
                   session, g
 from flask.ext.login import login_user, logout_user, \
@@ -19,9 +19,9 @@ fuel_ver = re.compile('(?:fuel|MirantisOpenStack)\-((\d+\.\d+)(?:(?:\-mos)?-\d+)
            strict_slashes=False)
 @login_required
 def tasks(task_id=None):
-    # TODO: refactor tasks as plugins
+    # TODO(hoo): refactor tasks as plugins
 
-    # TODO: add "run again with the same arguments"
+    # TODO(hop): add "run again with the same arguments"
 
     task_list = models.Task.query.all()
     if task_id is not None:
@@ -42,7 +42,7 @@ def tasks(task_id=None):
                     if ver[0][1] in ['6.1', '7.0', '8.0']:
                         venv += ver[0][1]
                 else:
-                    iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')  
+                    iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
 
                 if form.deploy_name.data:
                     deploy_name = '%s_%s' % (
@@ -87,7 +87,7 @@ def tasks(task_id=None):
                 filter.pop('user_id')
 
             run_list = models.Run.query.order_by(
-                    desc(models.Run.id)).filter_by(**filter).all()
+                desc(models.Run.id)).filter_by(**filter).all()
 
             if run_list:
                 form.deploy_name.choices = [
@@ -101,7 +101,8 @@ def tasks(task_id=None):
                     # save run to db
                     run = models.Run(
                         user_id=g.user.id, task_id=task_id,
-                        args={'deploy_name': exist_run.args['deploy_name']},
+                        args={'deploy_name': exist_run.args['deploy_name'],
+                              'venv': exist_run.args['venv']},
                         start_datetime=datetime.utcnow())
                     db.session.add(run)
                     db.session.commit()
@@ -132,9 +133,9 @@ def tasks(task_id=None):
 @login_required
 def runs(run_id=None):
 
-    # TODO: pagination
-    # TODO: share run/task???
-    # TODO: if run in q - update start_datetime
+    # TODO(hop): pagination
+    # TODO(hop): share run/task???
+    # TODO(hop): if run in q - update start_datetime
 
     if run_id is not None:
         run = models.Run.query.get(run_id)
@@ -184,7 +185,7 @@ def servers_del(server_id=None):
     if not g.user.is_admin:
         return render_template('404.html')
 
-    # TODO: block delete if server has runs
+    # TODO(hop): block delete if server has runs
     db.session.execute(models.Run.__table__.delete().where(
         models.Run.server_id == server_id))
     db.session.query(models.Server).filter_by(
@@ -199,7 +200,7 @@ def servers_del(server_id=None):
            methods=['GET', 'POST'], strict_slashes=False)
 @login_required
 def servers(server_id=None):
-    # TODO: add test ssh connection
+    # TODO(hop): add test ssh connection
 
     if not g.user.is_admin:
         return render_template('404.html')
@@ -274,9 +275,9 @@ def stats():
            strict_slashes=False)
 @login_required
 def users(user_id=None):
-    # TODO: change way to log in
+    # TODO(hop): change way to log in
 
-    # TODO: add info about admin user in settings
+    # TODO(hop): add info about admin user in settings
 
     if not g.user.is_admin:
         return render_template('404.html')

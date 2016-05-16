@@ -1,9 +1,9 @@
-import os
 from flask import Flask
 from flask.ext.login import LoginManager
 from flask.ext.openid import OpenID
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.socketio import SocketIO
+import os
 
 try:
     import eventlet
@@ -27,7 +27,7 @@ oid = OpenID(app, os.path.realpath('tmp'))
 
 from app import views, models
 
-# TODO: need fix logging
+# TODO(hop): need fix logging
 if not app.debug:
     import logging
     from logging.handlers import RotatingFileHandler

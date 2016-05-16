@@ -74,5 +74,5 @@ class Run(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     end_datetime = db.Column(db.DateTime, default=None)
     start_datetime = db.Column(db.DateTime)
-    # TODO: to get rid of PickleType
+    # TODO(hop): to get rid of PickleType
     args = db.Column(db.PickleType, default=None)

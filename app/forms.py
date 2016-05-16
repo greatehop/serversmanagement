@@ -22,7 +22,7 @@ class UniqueValidator(object):
         existing = self.model.query.filter(self.field == field.data).first()
         try:
             id = int(form.id.data)
-        except:
+        except Exception:
             id = None
         if existing and (id is None or id != existing.id):
             raise ValidationError(self.message)
