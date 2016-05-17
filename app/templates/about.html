@@ -29,4 +29,57 @@
         <li><a href="https://software.mirantis.com/releases/#supported">MOS releases</a></li>
     </ul>
     
+    <br><br>
+    <b>Tips</b>
+    <br><br>
+
+<b>HW server</b>
+<pre>
+# ssh tunnel from localhost for Fuel WebUI (will be available by http://127.0.0.1:ANY_PORT)
+ssh -f -N -L 127.0.0.1:ANY_PORT:FUEL_IP:8000 USERNAME@SERVER_IP
+  
+# ssh tunnel from server for Fuel WebUI (will be available by http://SERVER_IP:ANY_PORT)
+sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L SERVER_IP:ANY_PORT:FUEL_IP:8000 root@FUEL_IP
+
+# show nodes details
+for i in $(virsh list| awk '/USER_NAME/{print $2}'); do echo -e ${i}; virsh dumpxml ${i} | grep -i 'mem'; done
+
+# delete node
+virsh destroy NODE_NAME
+virsh undefine NODE_NAME --remove-all-storage --snapshots-metadata --wipe-storage
+
+# add memory to node
+virsh destroy NODE_NAME
+virsh setmaxmem NODE_NAME 8G --config
+virsh setmem NODE_NAME 8G --config
+virsh start NODE_NAME
+</pre>
+
+<b>FUEL node</b>
+<pre>
+# open all nodes in screen
+screen -dmS my -t fuel bash; for i in $(fuel node | awk '/ready.*True/{print $10}'); do screen -S my -X screen -t ${i} ssh ${i}; done; screen -r
+
+# examples: how to do something on all nodes
+for i in $(fuel node | awk '/ready.*compute.*True/{print $10}');
+do
+   ssh 2>/dev/null $i "rmmod kvm_intel kvm; echo -e 'blacklist kvm_intel\nblacklist kvm' >> /etc/modprobe.d/blacklist.conf";
+   ssh 2>/dev/null $i "grep 'nameserver' /etc/resolv.conf";
+   ssh 2>/dev/null $i "sed -i 's/10.122.35.2/10.122.35.254/g' /etc/resolv.conf;
+done
+</pre>
+
+<b>CTRL node</b>
+<pre>
+# allow ssh/icmp in firewall
+nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0 ; nova secgroup-add-rule default tcp 22 22 0.0.0.0/0; nova secgroup-list-rules default
+ip netns exec NAMESPACE_NAME ssh cirros@IP
+
+# boot VM
+nova boot --image TestVM --flavor m1.micro --nic net-id=$(neutron net-list | awk '/inter/{print $2}') test1
+
+# boot VM from volume
+nova boot --flavor m1.micro --nic net-id=$(neutron net-list | awk '/inter/{print $2}') --block-device source=image,id=IMAGE_ID,dest=volume,size=1,shutdown=remove,bootindex=0 test1
+</pre>
+    
 {% endblock %}

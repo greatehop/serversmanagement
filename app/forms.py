@@ -58,7 +58,7 @@ class TaskDeployMOSForm(Form):
     iso_url = TextField('iso_url', validators=[Required()])
     nodes_count = IntegerField('nodes_count',
                                default=settings.NODES_COUNT,
-                               validators=[NumberRange(min=1)])
+                               validators=[NumberRange(min=1, max=7)])
 
     slave_node_cpu = SelectField('slave_node_cpu',
                                  validators=[],

@@ -32,7 +32,7 @@
                 <td><b>State</b></td>
                 {#<td><b>Task</b></td>#}
                 <td><b>Server</b></td>
-                <td><b>User</b></td>
+                <td><b>User/DeploymentName</b></td>
                 <td><b>Start date/time</b></td>
             </tr>
             {% for run in run_list %}
@@ -65,7 +65,7 @@
                     {% endif %}
                 </td>
 
-                <td>{{ run.user.name }}</td>
+                <td>{{ run.args.deploy_name }}</td>
 
                 <td>
                     {{ run.start_datetime.strftime('%H:%M:%S %d.%m.%Y') }}
