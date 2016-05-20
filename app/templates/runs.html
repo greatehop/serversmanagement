@@ -36,7 +36,12 @@
                 <td><b>Start date/time</b></td>
             </tr>
             {% for run in run_list %}
+                {% if g.user.name == run.user.name %}
+            <tr class="success">
+                {% else %}
             <tr>
+                {% endif %}
+            
                 <td><a href="/runs/{{ run.id }}">#{{ run.id }}</a></td>
 
                 <td>

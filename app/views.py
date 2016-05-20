@@ -122,8 +122,7 @@ def tasks(task_id=None):
                     return redirect('/runs')
             else:
                 form = None
-        return render_template('tasks_clean_mos.html',
-                               task=task, form=form)
+        return render_template('tasks_clean_mos.html', task=task, form=form)
     else:
         return render_template('tasks.html', task_list=task_list)
 
