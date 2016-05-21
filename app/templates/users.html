@@ -17,7 +17,15 @@
             </tr>
 
             {% for user in user_list %}
-            <tr>
+            
+                {% if not user.is_active %}
+                    <tr class="error">
+                {% elif user.is_admin %}
+                    <tr class="success">
+                {% else %}
+                    <tr>
+                {% endif %}
+                
                 <td><a href="/users/{{ user.id }}">#{{ user.id }}</a></td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.email }}</td>
