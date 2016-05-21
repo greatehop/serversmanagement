@@ -8,11 +8,11 @@
 
         $(document).ready(function(){
             var socket = io.connect('http://' + document.domain + ':' + location.port + '/run{{ run.id }}');
-
+            
             socket.on('line', function(msg) {
                  $('#cmd_out').append('<br>' + $('<div/>').text(msg.data).html());
             });
-            
+
             // forse update page info 
             socket.on('stop', function(msg) {
                 //$("#loader").hide();
@@ -182,7 +182,6 @@
         {% if run.cmd_out %}
             <div align="left">
                 {{ run.cmd_out | safe }}
-
             </div>
             {% else %}
                 {% if run.state == '1' %}
@@ -190,8 +189,10 @@
                         <img src="/static/ico/loader.gif"/>
                     </div>
                 {% endif %}
-                    <div align="left" id="cmd_out"></div>
-                {% endif %}
+                
+                <div align="left" id="cmd_out"></div>
+                
+             {% endif %}
         {% else %}
             <div class="center">
                 <h3>Wrong run id!</h3>

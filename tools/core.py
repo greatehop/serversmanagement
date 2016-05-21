@@ -20,6 +20,12 @@ class ReadWriteStream(object):
         self.stream = stream
         self.data = []
 
+        @socketio.on('connect', namespace='/run%s' % run_id)
+        def on_connect():
+            for line in self.data:
+                socketio.emit('line', {'data': line},
+                              namespace='/run%s' % run_id)
+        
         def rw_output(stream, data):
             while True:
                 line = stream.readline()
@@ -45,7 +51,6 @@ class ReadWriteStream(object):
                     # send "singnal" for force page update
                     socketio.emit('stop', namespace='/run%s' % run_id)
                     socketio.emit('stop', namespace='/runs')
-
                     break
 
         self.t = Thread(target=rw_output, args=(self.stream, self.data))
