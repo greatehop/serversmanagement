@@ -67,7 +67,7 @@ class Task(db.Model):
 class Run(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     state = db.Column(db.String(15), default=settings.RUN_STATE['in_queue'])
-    cmd_out = db.Column(db.Text, default=None)
+    cmd_out = db.Column(db.Text(length=1048576), default=None)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
     server_id = db.Column(db.Integer, db.ForeignKey('server.id'),
                           default=None)
