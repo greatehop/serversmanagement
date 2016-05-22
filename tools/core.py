@@ -25,7 +25,7 @@ class ReadWriteStream(object):
             for line in self.data:
                 socketio.emit('line', {'data': line},
                               namespace='/run%s' % run_id)
-        
+
         def rw_output(stream, data):
             while True:
                 line = stream.readline()
@@ -81,7 +81,7 @@ class Scheduler(Thread):
                         break
 
             """
-            # delete old envs
+            # delete old envs (based on keep_days argument)
             filter2 = {'state': settings.RUN_STATE['done'], 'task_id': 1}
             runs_for_del = models.Run.query.order_by(
                 models.Run.id).filter_by(**filter2).all()

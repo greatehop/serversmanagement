@@ -5,7 +5,7 @@ from app import models
 from wtforms import TextField, SelectField, IntegerField, \
                     BooleanField, HiddenField
 from wtforms.validators import Required, IPAddress, NumberRange, \
-                               ValidationError
+                               ValidationError, Regexp
 
 
 class UniqueValidator(object):
@@ -55,7 +55,11 @@ class UserForm(Form):
 
 class TaskDeployMOSForm(Form):
     deploy_name = TextField('deploy_name', validators=[])
-    iso_url = TextField('iso_url', validators=[Required()])
+    iso_url = TextField('iso_url',
+        validators=[Required(),
+                    Regexp(message='Invalid iso or torrent',
+                           regex='^.*\.(iso|torrent)$')])
+
     nodes_count = IntegerField('nodes_count',
                                default=settings.NODES_COUNT,
                                validators=[NumberRange(min=1, max=7)])
@@ -76,6 +80,8 @@ class TaskDeployMOSForm(Form):
     keep_days = IntegerField('keep_days',
                              default=settings.KEEP_DAYS,
                              validators=[NumberRange(min=0)])
+    ironic_nodes_count = IntegerField('ironic', default=0,
+                                      validators=[NumberRange(min=0)])
 
 
 class TaskCleanMOSForm(Form):

@@ -7,6 +7,15 @@
 <div align="center">
     <h3>Deploy environment</h3>
 
+    <div align="left">
+    <b>Notes:</b>
+    <ul>
+        <li>supported only MOS >= 6.1</li>
+        <li>in MOS 6.1-8.0 Fuel WebUI not always available right after deploy</li>
+    </ul>
+    </div>
+    <br>
+    
     <form action="/tasks/{{ task.id }}" method="post">
     <table class="table table-hover table-striped table-bordered" style="max-width:45% !important; margin:0 auto !important;">
     {{ form.hidden_tag() }}
@@ -59,6 +68,37 @@
         </td>
     </tr>
     
+    <tr>
+        <td>
+            <b>Deployment name:</b> <font color="orange">(optional)</font><br>
+            (<b>auto-generated</b> from user+url, like: <b>admin_9.0-123</b>)
+        </td>
+
+        <td>
+            {{ form.deploy_name(size=20) }} 
+
+            {% if form.deploy_name.errors %}<br>
+                <font color="red">{{ form.deploy_name.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
+
+    {# additional values #}
+
+    <tr>
+        <td>
+            <b>Count of Ironic nodes:</b>
+            <br>(0 - off)
+        </td>
+        <td>
+            {{ form.ironic_nodes_count }} *
+    
+            {% if form.ironic_nodes_count.errors %}<br>
+                <font color="red">{{ form.ironic_nodes_count.errors | join(', ') }}</font>
+            {% endif %}
+        </td>
+    </tr>
+    
     {#
     <tr>
         <td>
@@ -74,21 +114,7 @@
         </td>
     </tr>
     #}
-    
-    <tr>
-        <td>
-            <b>Deployment name:</b> <font color="orange">(optional)</font><br>
-            (<b>auto-generated</b> from user+url, like: <b>admin_9.0-123</b>)
-        </td>
 
-        <td>
-            {{ form.deploy_name(size=20) }} 
-
-            {% if form.deploy_name.errors %}<br>
-                <font color="red">{{ form.deploy_name.errors | join(', ') }}</font>
-            {% endif %}
-        </td>
-    </tr>
     {#
     <tr>
         <td>
@@ -103,6 +129,8 @@
     </table>
     <br><p><input class="btn btn-success" type="submit" value="deploy"></p>
     </form>
+    
+    
 </div>
 
 {% endblock %}

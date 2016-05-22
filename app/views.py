@@ -50,6 +50,11 @@ def tasks(task_id=None):
                 else:
                     deploy_name = '%s_%s' % (g.user.name, iso)
 
+                # ironic support
+                ironic_enabled = 'false'
+                if int(form.ironic_nodes_count.data):
+                    ironic_enabled = 'true'
+
                 # save run to db
                 run = models.Run(
                     user_id=g.user.id,
@@ -60,6 +65,8 @@ def tasks(task_id=None):
                           'nodes_count': form.nodes_count.data,
                           'slave_node_cpu': form.slave_node_cpu.data,
                           'slave_node_memory': form.slave_node_memory.data,
+                          'ironic_nodes_count': form.ironic_nodes_count.data,
+                          'ironic_enabled': ironic_enabled,
                           'keep_days': form.keep_days.data,
                           'venv': venv})
                 db.session.add(run)

@@ -18,6 +18,8 @@ def deploy_mos(**kwargs):
                    NODES_COUNT=kwargs['nodes_count'],
                    DEPLOYMENT_NAME=kwargs['deploy_name'],
                    ISO_URL=kwargs['iso_url'],
+                   IRONIC_NODES_COUNT=kwargs['ironic_nodes_count'],
+                   IRONIC_ENABLED=kwargs['ironic_enabled'],
                    SERVER_IP=kwargs['server_ip'],
                    VENV=kwargs['venv']):
         run('~/sm_scripts/deploy_mos.sh')
