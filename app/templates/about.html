@@ -43,7 +43,7 @@ ssh -f -N -L 127.0.0.1:ANY_PORT:FUEL_IP:8000 USERNAME@SERVER_IP
 sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L SERVER_IP:ANY_PORT:FUEL_IP:8000 root@FUEL_IP
 
 # map between kvm nodes and fuel nodes
-sshpass -p r00tme ssh root@FUEL_IP "fuel node | awk '/^[0-9]/{print}' | tr -d '()'" > /tmp/111.txt
+sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@FUEL_IP "fuel node | awk '/^[0-9]/{print}' | tr -d '()'" > /tmp/111.txt
 for i in $(virsh list| awk '/ENV_NAME/{print $2}'); do awk -v mac=$(virsh dumpxml ${i}| grep -oP 'admin_\K(\w{2}:?){6}') -v i=$i '{if (mac ~ $6) print $1, $10, i}' /tmp/111.txt; done
 
 # show MAC for all nodes

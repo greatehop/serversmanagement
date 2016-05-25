@@ -4,7 +4,7 @@ set +x
 
 PATH_MAIN="/home/jenkins"
 PATH_DOWNLOADS_ISO="${PATH_MAIN}/sm_scripts/iso"
-ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false --allow-piece-length-change=true --show-console-readout=false"
+ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false --allow-piece-length-change=true --show-console-readout=true"
 VENV_PATH="${PATH_MAIN}/sm_scripts/${VENV}"
 FUEL_QA_PATH="${PATH_MAIN}/sm_scripts/${VENV}/fuel-qa"
 
@@ -44,6 +44,15 @@ function show_env_info() {
     sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
 
     if [[ "$?" -eq 0 ]]; then
+        echo -e "map between kvm nodes and fuel nodes (id, ip, kvm_name)\n"
+        sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${FUEL_IP} "fuel node | awk '/^[0-9]/{print}' | tr -d '()'" > /tmp/fuel_node.txt
+        for i in $(virsh list| grep "${ENV_NAME}" | awk '{print $2}'); do awk -v mac=$(virsh dumpxml ${i}| grep -oP "admin_\K(\w{2}:?){6}") -v i=$i '{if (mac ~ $6) print $1, $10, i}' /tmp/fuel_node.txt; done
+
+        if ${IRONIC_ENABLED}; then
+            echo -e "Ironic node(s) MAC\n"
+            for i in $(virsh list --all| grep "${ENV_NAME}_ironic" | awk '{print $2}'); do echo ${i}; virsh dumpxml ${i} | grep -oP "mac address='\K[^']+"; done
+        fi
+
         echo -e "\n"
         echo "Server IP: ${SERVER_IP}"
         echo -e "\n"

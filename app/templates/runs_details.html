@@ -162,6 +162,14 @@
                 <td><b>slave_node_cpu</b></td>
                 <td>{{ run.args.slave_node_cpu }}</td>
             </tr>
+            
+            {% if run.args.ironic_nodes_count %}
+            <tr>
+                <td><b>ironic_nodes_count</b></td>
+                <td>{{ run.args.ironic_nodes_count }}</td>
+            </tr>
+            {% endif %}
+            
             {#
             <tr>
                 <td><b>keep_days</b></td>
