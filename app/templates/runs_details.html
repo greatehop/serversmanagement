@@ -81,10 +81,10 @@
             </tr>
 
             <tr>
-                <td><b>Servers</b></td>
+                <td><b>Server</b></td>
                 <td>
                     {% if run.server.id %}
-                        {{ run.server.alias }}
+                        {{ run.server.alias }} / {{ run.server.ip }}
                     {% else %}
                         -
                     {% endif %}

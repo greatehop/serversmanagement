@@ -37,19 +37,18 @@ function show_env_info() {
     while true; do SSH_PORT=$(shuf -i 5000-65000 -n 1); nc ${SERVER_IP} ${SSH_PORT} < /dev/null; if [[ $? -ne 0 ]]; then break; fi done
     while true; do FUEL_PORT=$(shuf -i 5000-65000 -n 1); nc ${SERVER_IP} ${SSH_PORT} < /dev/null; if [[ $? -ne 0 ]]; then break; fi done
 
-    echo "sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}"
+    set -x
     sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}
-
-    echo "sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}"
+    set +x
     sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
 
     if [[ "$?" -eq 0 ]]; then
-        echo -e "map between kvm nodes and fuel nodes (id, ip, kvm_name)\n"
-        sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${FUEL_IP} "fuel node | awk '/^[0-9]/{print}' | tr -d '()'" > /tmp/fuel_node.txt
+        echo -e "Map between kvm nodes and fuel nodes (id, ip, kvm_name):\n"
+        sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${FUEL_IP} "fuel node | awk '/^\s*[0-9]/{print}' | tr -d '()'" > /tmp/fuel_node.txt
         for i in $(virsh list| grep "${ENV_NAME}" | awk '{print $2}'); do awk -v mac=$(virsh dumpxml ${i}| grep -oP "admin_\K(\w{2}:?){6}") -v i=$i '{if (mac ~ $6) print $1, $10, i}' /tmp/fuel_node.txt; done
 
         if ${IRONIC_ENABLED}; then
-            echo -e "Ironic node(s) MAC\n"
+            echo -e "Ironic node(s) MAC:\n"
             for i in $(virsh list --all| grep "${ENV_NAME}_ironic" | awk '{print $2}'); do echo ${i}; virsh dumpxml ${i} | grep -oP "mac address='\K[^']+"; done
         fi
 

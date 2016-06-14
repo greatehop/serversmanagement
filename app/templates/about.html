@@ -17,17 +17,17 @@
     <p class="spoiler_block"><img src="/static/ico/howtorun.gif"></p> 
     <hr />
 
-    <b id="old">Links</b>
+    <b> Links</b>
     <ul>
+        <li><a href="https://mirantis.jira.com/wiki/display/PRD/Obtaining+Mirantis+OpenStack+Releases">Obtaining+Mirantis+OpenStack+Releases</a></li>
         <li>
-            old MOS ISO
+            <a href="https://software.mirantis.com/releases/#supported">MOS releases</a> - (
             <a href="http://9f2b43d3ab92f886c3f0-e8d43ffad23ec549234584e5c62a6e24.r60.cf1.rackcdn.com/MirantisOpenStack-6.1.iso">6.1</a> /
             <a href="http://9f2b43d3ab92f886c3f0-e8d43ffad23ec549234584e5c62a6e24.r60.cf1.rackcdn.com/MirantisOpenStack-7.0.iso">7.0</a> /
-            <a href="http://9f2b43d3ab92f886c3f0-e8d43ffad23ec549234584e5c62a6e24.r60.cf1.rackcdn.com/MirantisOpenStack-8.0.iso">8.0</a> 
+            <a href="http://9f2b43d3ab92f886c3f0-e8d43ffad23ec549234584e5c62a6e24.r60.cf1.rackcdn.com/MirantisOpenStack-8.0.iso">8.0</a> ) 
         </li>
-        <li><a href="http://product-jenkins-reports.vm.mirantis.net/">jenkins reports</a></li>
-        <li><a href="https://product-ci.infra.mirantis.net/">product CI</a></li>
-        <li><a href="https://software.mirantis.com/releases/#supported">MOS releases</a></li>
+        <li><a href="http://product-jenkins-reports.vm.mirantis.net/">Jenkins reports</a></li>
+        <li><a href="https://product-ci.infra.mirantis.net/">Product CI</a></li>
     </ul>
     
     <hr />
@@ -43,7 +43,7 @@ ssh -f -N -L 127.0.0.1:ANY_PORT:FUEL_IP:8000 USERNAME@SERVER_IP
 sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L SERVER_IP:ANY_PORT:FUEL_IP:8000 root@FUEL_IP
 
 # map between kvm nodes and fuel nodes
-sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@FUEL_IP "fuel node | awk '/^[0-9]/{print}' | tr -d '()'" > /tmp/111.txt
+sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@FUEL_IP "fuel node | awk '/^\s*[0-9]/{print}' | tr -d '()'" > /tmp/111.txt
 for i in $(virsh list| awk '/ENV_NAME/{print $2}'); do awk -v mac=$(virsh dumpxml ${i}| grep -oP 'admin_\K(\w{2}:?){6}') -v i=$i '{if (mac ~ $6) print $1, $10, i}' /tmp/111.txt; done
 
 # show MAC for all nodes
@@ -63,6 +63,7 @@ virsh start NODE_NAME
 FUEL node
 <pre>
 # show Fuel version
+shotgun2 short-report
 shotgun2 report
     
 # open all nodes in screen

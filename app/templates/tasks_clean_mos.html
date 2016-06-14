@@ -2,27 +2,43 @@
 
 {% block title %}<a href="/tasks">Tasks</a> - {{ task.taskname }} {% endblock %}
 
+{% block js %}
+
+    <script type="text/javascript" charset="utf-8">
+
+        $(function() {
+            $('.confirm').click(function() {
+                return window.confirm("Are you sure?");
+            });
+        });
+
+    </script>
+
+{% endblock %}
+
 {% block body %}
 
-<div align="center">
 
-    {% if form %}
-        <form action="/tasks/{{ task.id }}" method="post">
-            {{ form.hidden_tag() }}
-
-            <p>
-                <h3>Delete environment</h3>
-                {{ form.deploy_name }}<br>
-            </p>
-
-            <p><input type="submit" value="clean" class="btn btn-danger"></p>
-        </form>
-    {% else %}
-        <div align="center">
-            <h3>You don't have active environments</h3>
-        </div>
-    {% endif %}
-
-</div>
+    <div align="center">
+    
+        {% if form %}
+            <form action="/tasks/{{ task.id }}" method="post">
+                {{ form.hidden_tag() }}
+    
+                <p>
+                    <h3>Delete environment</h3>
+                    {{ form.deploy_name }}<br>
+                </p>
+    
+                <p><input type="submit" value="clean" class="btn btn-danger confirm"></p>
+                
+            </form>
+        {% else %}
+            <div align="center">
+                <h3>You don't have active environments</h3>
+            </div>
+        {% endif %}
+    
+    </div>
 
 {% endblock %}
