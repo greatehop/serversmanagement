@@ -89,49 +89,33 @@ service nginx reload
 service mysql start
 mysql -u root -p
 CREATE DATABASE dbname;
-GRANT ALL PRIVILEGES ON dbname.* TO dbuser@host IDENTIFIED BY password WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON dbname.* TO 'dbuser'@'host' IDENTIFIED BY 'password' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
-cd tools; python ./create_db.py
+
+export FLASK_APP=serversmanagement/run.py
+flask db upgrade
 </pre>
 
 - edit settings.py
 
-- configurate remote server
+- configurate remote server (use prepare.sh script)
 
 https://docs.fuel-infra.org/fuel-dev/devops.html
 
 <pre>
+perform the following commands on remote servers:
 apt-get update
 apt-get install aria2 sshpass
 
-mkdir -p ~/sm_scripts/iso
-
-# current release
-cd ~/sm_scripts/
-virtualenv --system-site-packages venv-mos
-git clone http://github.com/openstack/fuel-qa ./venv-mos/fuel-qa
-source ./venv-mos/bin/activate
-cd ./venv-mos/fuel-qa/
-pip install -r ./fuelweb_test/requirements.txt --upgrade
-deactivate
-
-# old releases
-for VER in "6.1" "7.0" "8.0"
-do
-  cd ~/sm_scripts/
-  virtualenv --system-site-packages venv-mos${VER}
-  git clone -b stable/${VER} http://github.com/openstack/fuel-qa ./venv-mos${VER}/fuel-qa
-  source ./venv-mos${VER}/bin/activate
-  cd ./venv-mos${VER}/fuel-qa/
-  pip install -r ./fuelweb_test/requirements.txt --upgrade
-  deactivate
-done
+run the following script on remote servers:
+./tools/prepare.sh
 </pre>
 
 - run app
 
 <pre>
-screen -t sm python ./run.py
+export PYTHONPATH=$PYTHONPATH:.
+screen -t sm python ./serversmanagement/run.py
 </pre>
 
 ## TODO

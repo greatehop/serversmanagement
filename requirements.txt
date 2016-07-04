@@ -1,12 +1,15 @@
 eventlet
 Fabric
-gevent
 SQLAlchemy
 Flask
 WTForms
 flask-wtf
+Flask-alembic
 Flask-Login
 Flask-OpenID
 Flask-SQLAlchemy
 Flask-SocketIO
 Flask-MySQLdb
+pyyaml
+pyzabbix
+tox

@@ -21,7 +21,7 @@ MAX_TASKS = 1
 
 # tasks args
 NODES_COUNT = 6
-KEEP_DAYS = 0
+KEEP_DAYS = 1
 
 # admin list
 # (needs only for first log in, manage by user -> is_admin)
@@ -38,3 +38,10 @@ RUN_STATE = {'in_queue': 0, 'in_progress': 1, 'done': 2,
 OPENID = {'launchpad':
           {'url': 'https://launchpad.net/people/+me',
                   'openid': 'https://login.launchpad.net/+openid'}}
+
+ALEMBIC = {'version_locations': [],
+           'script_location': 'database/migrations'}
+
+ZABBIX_LINK = "http://cz7776.bud.mirantis.net/zabbix/"
+RESERVED_BY_SYSTEM_RAM = 10
+RESERVED_BY_SYSTEM_DISK = 100

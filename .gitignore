@@ -2,6 +2,8 @@
 .pydevproject
 .project
 .tox/
+.idea/
 db_repository/
 tmp/
 venv/
+logs/
