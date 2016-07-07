@@ -16,9 +16,9 @@
             <li>Fuel WebUI in MOS 6.1-8.0 is not always available right after deploy</li>
         </ul>
     </div>
-    
+
     <br>
-    
+
     <form action="/tasks/{{ task.id }}" method="post">
     <table class="table table-hover table-striped table-bordered" style="max-width:45% !important; margin:0 auto !important;">
     {{ form.hidden_tag() }}
@@ -27,8 +27,8 @@
         <td>
             <b>URL(ISO/torrent):</b><br>
             (just put torrent link for <font color="green">"green"</font> build from 
-            <a href="http://product-jenkins-reports.vm.mirantis.net/">MOS ISOs</a> or 
-            <a href="https://mirantis.jira.com/wiki/display/PRD/Obtaining+Mirantis+OpenStack+Releases">old releases</a>)
+            <a href="http://product-jenkins-reports.vm.mirantis.net/" target="_blank">MOS ISOs</a> or 
+            <a href="https://mirantis.jira.com/wiki/display/PRD/Obtaining+Mirantis+OpenStack+Releases" target="_blank">old releases</a>)
         </td>
 
         <td>
@@ -70,7 +70,7 @@
             {{ form.slave_node_memory }}
         </td>
     </tr>
-    
+
     <tr>
         <td>
             <b>Deployment name:</b> <font color="orange">(optional)</font><br>
@@ -95,13 +95,13 @@
         </td>
         <td>
             {{ form.ironic_nodes_count }} *
-    
+
             {% if form.ironic_nodes_count.errors %}<br>
                 <font color="red">{{ form.ironic_nodes_count.errors | join(', ') }}</font>
             {% endif %}
         </td>
     </tr>
-    
+
     {#
     <tr>
         <td>
@@ -110,7 +110,7 @@
         </td>
         <td>
             {{ form.keep_days }} *
-    
+
             {% if form.keep_days.errors %}<br>
                 <font color="red">{{ form.keep_days.errors | join(', ') }}</font>
             {% endif %}
@@ -132,8 +132,8 @@
     </table>
     <br><p><input class="btn btn-success" type="submit" value="deploy"></p>
     </form>
-    
-    
+
+
 </div>
 
 {% endblock %}

@@ -8,15 +8,28 @@
 
         $(document).ready(function(){
             var socket = io.connect('http://' + document.domain + ':' + location.port + '/run{{ run.id }}');
-            
+
             socket.on('line', function(msg) {
-                 $('#cmd_out').append('<br>' + $('<div/>').text(msg.data).html());
+                 $('#cmd_out').append('<br>' + $('<div/>').html(msg.data).html());
             });
 
-            // forse update page info 
+            // forse update page info
             socket.on('stop', function(msg) {
-                //$("#loader").hide();
+
                 location.reload();
+
+                /* TODO(hop): need fix
+                var link = document.createElement('link');
+                link.type = 'image/x-icon';
+                link.rel = 'shortcut icon';
+                link.href = 'favicon_new.ico';
+                document.getElementsByTagName('head')[0].appendChild(link);
+
+                //document.title = 'Finished';
+
+                //$("#loader").hide();
+
+                */
             });
 
         });
@@ -31,11 +44,12 @@
 {% block body %}
 
     {% if run %}
-    
 
-        <div align="center"><h3>Run's info</h3><br>
-
-        <table class="table table-hover table-striped table-bordered" style="max-width:30% !important; margin:0 auto !important;">
+        <div align="center">
+            <div class="row-fluid">
+            <div class="span6">
+            <h3>Run's info</h3>
+        <table class="table table-hover table-striped table-bordered" style="max-width:100%; margin:0 auto !important;">
 
             <tr>
                 <td><b>Run's ID</b></td>
@@ -60,10 +74,10 @@
                         <input class="btn btn-danger" type="submit" value="cancel">
                       </form>
                       {% endif %}
-                  #}    
+                  #}
                   {% elif run.state == '2' %}
                       <font color="green">done</font>
-                  {#    
+                  {#
                       {% if run.task.taskname == "deploy_mos" %}
                           {% if g.user.is_admin or g.user.name == run.user.name %}
                           <form action="/run/{{run.id}}" method="post">
@@ -72,7 +86,7 @@
                           </form>
                           {% endif %}
                       {% endif %}
-                  #}  
+                  #}
                   {% elif run.state == '3' %}
                       <font color="red">canceled</font>
                   {% else %}
@@ -128,48 +142,48 @@
                 </td>
             </tr>
         </table>
-        <br>
+        </div>
 
-
+        <div class="span6">
         <h3>Task's arguments</h3>
-        <br>
+        <a id="scrollBtm">Scroll Bottom</a>
 
         {% if run.args %}
-        <table class="table table-hover table-striped table-bordered" style="max-width:30% !important; margin:0 auto !important;">
+        <table class="table table-hover table-striped table-bordered" style="max-width:100%; margin:0 auto !important;">
 
             <tr>
                 <td><b>deploy_name</b></td>
                 <td>{{ run.args.deploy_name }}</td>
             </tr>
-            
+
             {% if run.task.taskname == "deploy_mos" %}
             <tr>
                 <td><b>url</b></td>
                 <td>{{ run.args.iso_url }}</td>
             </tr>
-            
+
             <tr>
                 <td><b>nodes_count</b></td>
                 <td>{{ run.args.nodes_count }}</td>
             </tr>
-            
+
             <tr>
                 <td><b>slave_node_memory</b></td>
                 <td>{{ run.args.slave_node_memory }}</td>
             </tr>
-            
+
             <tr>
                 <td><b>slave_node_cpu</b></td>
                 <td>{{ run.args.slave_node_cpu }}</td>
             </tr>
-            
+
             {% if run.args.ironic_nodes_count %}
             <tr>
                 <td><b>ironic_nodes_count</b></td>
                 <td>{{ run.args.ironic_nodes_count }}</td>
             </tr>
             {% endif %}
-            
+
             {#
             <tr>
                 <td><b>keep_days</b></td>
@@ -177,34 +191,35 @@
             </tr>
             #}
             {% endif %}
-            
+
         </table>
         {% else %}
             None
         {% endif %}
         </div>
+        </div>
+        </div>
         <br>
-                
-       <div align="center"><h3>Task's output</h3><br></div>
 
+        <div align="center"><h3>Task's output</h3><br></div>
+        <div style="border:1px solid #DDD; padding:10px;">
         {% if run.cmd_out %}
             <div align="left">
                 {{ run.cmd_out | safe }}
             </div>
             {% else %}
+                <div align="left" id="cmd_out"></div>
                 {% if run.state == '1' %}
                     <div id="loader" align="center">
                         <img src="/static/ico/loader.gif"/>
                     </div>
                 {% endif %}
-                
-                <div align="left" id="cmd_out"></div>
-                
-             {% endif %}
+        {% endif %}
+        </div>
+
         {% else %}
             <div class="center">
                 <h3>Wrong run id!</h3>
             </div>
     {% endif %}
-
 {% endblock %}

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+for i in {1..10}; do echo ${i}; 
+    echo "<b>Fuel WebUI:</b> <a href='http://1.1.1.1'>11111111111</a>"
+sleep 1; done
+exit
 set +x
 
 PATH_MAIN="/home/jenkins"
@@ -23,34 +27,22 @@ function get_iso() {
 function show_env_info() {
     ENV_NAME="$1"
     FUEL_IP="$2"
-    echo -e "\n"
-    echo "################################################################################################"
-    echo "###################################  Environment Info: #########################################"
-    echo "################################################################################################"
-    echo -e "\n"
-    dos.py net-list ${ENV_NAME}
-    echo -e "\n"
-    dos.py show ${ENV_NAME}
-    echo -e "\n"
 
-    #get random not binded port
+    #get random and not binded port
     while true; do SSH_PORT=$(shuf -i 5000-65000 -n 1); nc ${SERVER_IP} ${SSH_PORT} < /dev/null; if [[ $? -ne 0 ]]; then break; fi done
     while true; do FUEL_PORT=$(shuf -i 5000-65000 -n 1); nc ${SERVER_IP} ${SSH_PORT} < /dev/null; if [[ $? -ne 0 ]]; then break; fi done
 
     set -x
     sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${FUEL_PORT}:${FUEL_IP}:8000 root@${FUEL_IP}
-    set +x
     sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -f -N -L ${SERVER_IP}:${SSH_PORT}:${FUEL_IP}:22 root@${FUEL_IP}
+    RETURN_CODE=$?
+    set +x
 
-    if [[ "$?" -eq 0 ]]; then
-        echo -e "Map between kvm nodes and fuel nodes (id, ip, kvm_name):\n"
-        sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${FUEL_IP} "fuel node | awk '/^\s*[0-9]/{print}' | tr -d '()'" > /tmp/fuel_node.txt
-        for i in $(virsh list| grep "${ENV_NAME}" | awk '{print $2}'); do awk -v mac=$(virsh dumpxml ${i}| grep -oP "admin_\K(\w{2}:?){6}") -v i=$i '{if (mac ~ $6) print $1, $10, i}' /tmp/fuel_node.txt; done
+    echo "################################################################################################"
+    echo "###################################  Environment Info: #########################################"
+    echo "################################################################################################"
 
-        if ${IRONIC_ENABLED}; then
-            echo -e "Ironic node(s) MAC:\n"
-            for i in $(virsh list --all| grep "${ENV_NAME}_ironic" | awk '{print $2}'); do echo ${i}; virsh dumpxml ${i} | grep -oP "mac address='\K[^']+"; done
-        fi
+    if [[ "${RETURN_CODE}" -eq 0 ]]; then
 
         echo -e "\n"
         echo "Server IP: ${SERVER_IP}"
@@ -61,6 +53,23 @@ function show_env_info() {
         echo -e "\nuser/pass: admin/admin\n"
         echo "<b>Fuel SSH:</b> ssh root@${SERVER_IP} -p ${SSH_PORT}"
         echo -e "\nuser/pass: root/r00tme\n"
+
+        echo -e "\n"
+        dos.py net-list ${ENV_NAME}
+        echo -e "\n"
+        dos.py show ${ENV_NAME}
+        echo -e "\n"
+
+        echo -e "Map between kvm nodes and fuel nodes (id, ip, kvm_name):\n"
+        sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${FUEL_IP} "fuel node | awk '/^\s*[0-9]/{print}' | tr -d '()'" > /tmp/fuel_node.txt
+        for i in $(virsh list| grep "${ENV_NAME}" | awk '{print $2}'); do awk -v mac=$(virsh dumpxml ${i}| grep -oP "admin_\K(\w{2}:?){6}") -v i=$i '{if (mac ~ $6) print $1, $10, i}' /tmp/fuel_node.txt; done
+
+        echo -e "\n"
+        if ${IRONIC_ENABLED}; then
+            echo -e "Ironic node(s) MAC:\n"
+            for i in $(virsh list --all| grep "${ENV_NAME}_ironic" | awk '{print $2}'); do echo ${i}; virsh dumpxml ${i} | grep -oP "mac address='\K[^']+"; done
+        fi
+
     else
         echo "<b>Something has gone wrong! Connect to server (ssh ${SERVER_IP}) and try to debug.</b>"
     fi

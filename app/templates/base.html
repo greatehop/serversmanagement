@@ -25,12 +25,17 @@
        $(document).ready( function() {
         $('#backTop').backTop({
           // the scroll position in px from the top
-          'position' : 300,
+          'position' : 200,
           // scroll animation speed
           'speed' : 10,
           // red, white, black or green
           'color' : 'black',
         });
+
+		$('#scrollBtm').on('click', function(){
+			var widnowHeight = $(document).height();
+			$("html, body").animate({scrollTop:widnowHeight},{duration:200});
+		});
        });
 
     </script>
