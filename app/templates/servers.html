@@ -68,7 +68,7 @@
         {% for server in server_list %}
          {% if not server.state %}
         <tr class="error">
-            {% elif server.max_tasks >= server.cur_tasks %}
+            {% elif server.max_tasks == server.cur_tasks %}
         <tr class="warning">
             {% else %}
         <tr>

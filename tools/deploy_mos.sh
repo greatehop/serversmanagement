@@ -1,9 +1,5 @@
 #!/bin/bash
 
-for i in {1..10}; do echo ${i}; 
-    echo "<b>Fuel WebUI:</b> <a href='http://1.1.1.1'>11111111111</a>"
-sleep 1; done
-exit
 set +x
 
 PATH_MAIN="/home/jenkins"
@@ -46,7 +42,6 @@ function show_env_info() {
 
         echo -e "\n"
         echo "Server IP: ${SERVER_IP}"
-        echo -e "\n"
         echo "Fuel IP: ${FUEL_IP}"
         echo -e "\n"
         echo "<b>Fuel WebUI:</b> <a href='http://${SERVER_IP}:${FUEL_PORT}'>${SERVER_IP}:${FUEL_PORT}</a>"
@@ -60,11 +55,6 @@ function show_env_info() {
         dos.py show ${ENV_NAME}
         echo -e "\n"
 
-        echo -e "Map between kvm nodes and fuel nodes (id, ip, kvm_name):\n"
-        sshpass -p r00tme ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@${FUEL_IP} "fuel node | awk '/^\s*[0-9]/{print}' | tr -d '()'" > /tmp/fuel_node.txt
-        for i in $(virsh list| grep "${ENV_NAME}" | awk '{print $2}'); do awk -v mac=$(virsh dumpxml ${i}| grep -oP "admin_\K(\w{2}:?){6}") -v i=$i '{if (mac ~ $6) print $1, $10, i}' /tmp/fuel_node.txt; done
-
-        echo -e "\n"
         if ${IRONIC_ENABLED}; then
             echo -e "Ironic node(s) MAC:\n"
             for i in $(virsh list --all| grep "${ENV_NAME}_ironic" | awk '{print $2}'); do echo ${i}; virsh dumpxml ${i} | grep -oP "mac address='\K[^']+"; done
