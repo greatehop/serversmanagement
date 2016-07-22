@@ -1,18 +1,18 @@
-from fabric.api import env, run, task, put
+from fabric import api as fab_api
 from fabric.context_managers import shell_env
 
-env.output_prefix = False
+fab_api.env.output_prefix = False
 
 
-@task
+@fab_api.task
 def verify_ssh():
-    run('uptime')
+    fab_api.run('uptime')
 
 
-@task
+@fab_api.task
 def deploy_mos(**kwargs):
     """Task "deploy_mos" for deploy Fuel node"""
-    put('tools/deploy_mos.sh', '~/sm_scripts/', mode=0755)
+    fab_api.put('tools/deploy_mos.sh', '~/sm_scripts/', mode=0o755)
     with shell_env(SLAVE_NODE_MEMORY=kwargs['slave_node_memory'],
                    SLAVE_NODE_CPU=kwargs['slave_node_cpu'],
                    NODES_COUNT=kwargs['nodes_count'],
@@ -22,13 +22,13 @@ def deploy_mos(**kwargs):
                    IRONIC_ENABLED=kwargs['ironic_enabled'],
                    SERVER_IP=kwargs['server_ip'],
                    VENV=kwargs['venv']):
-        run('~/sm_scripts/deploy_mos.sh')
+        fab_api.run('~/sm_scripts/deploy_mos.sh')
 
 
-@task
+@fab_api.task
 def clean_mos(**kwargs):
     """Task "clean_mos" for clean up Fuel node"""
-    put('tools/clean_mos.sh', '~/sm_scripts/', mode=0755)
+    fab_api.put('tools/clean_mos.sh', '~/sm_scripts/', mode=0o755)
     with shell_env(DEPLOYMENT_NAME=kwargs['deploy_name'],
                    VENV=kwargs.get('venv', 'venv-mos')):
-        run('~/sm_scripts/clean_mos.sh')
+        fab_api.run('~/sm_scripts/clean_mos.sh')

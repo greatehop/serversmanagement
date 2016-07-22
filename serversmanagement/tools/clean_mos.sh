@@ -2,7 +2,7 @@
 
 set +x
 
-PATH_MAIN="/home/jenkins"
+PATH_MAIN=$(pwd)
 VENV_PATH="${PATH_MAIN}/sm_scripts/${VENV}"
 
 source ${VENV_PATH}/bin/activate
