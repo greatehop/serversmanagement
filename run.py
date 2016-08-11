@@ -1,4 +1,5 @@
-from app import app, socketio
+from app import app
+from app import extensions as ext
 from tools.core import Scheduler
 
 if __name__ == '__main__':
@@ -7,4 +8,4 @@ if __name__ == '__main__':
     daemon.start()
 
     # run web app
-    socketio.run(app, host='0.0.0.0', port=5000)
+    ext.socketio.run(app, host='0.0.0.0', port=5000)
