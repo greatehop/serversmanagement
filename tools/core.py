@@ -1,5 +1,6 @@
 import settings
-from app import models, db, socketio
+from app import models
+from app.extensions import db, socketio
 
 import os
 import signal
