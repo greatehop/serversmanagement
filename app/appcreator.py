@@ -1,6 +1,6 @@
 import flask
 
-import app.extensions as ext
+from app import extensions as ext
 from app.views import common
 
 
@@ -28,6 +28,7 @@ def _register_blueprints(app, blueprints):
 
 
 def _register_extensions(app):
+    ext.alembic.init_app(app)
     ext.socketio.init_app(app)
 
     ext.db.init_app(app)

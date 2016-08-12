@@ -1,5 +1,5 @@
 import settings
-from app import models
+from app.database import models
 from app.extensions import db, socketio
 
 import os

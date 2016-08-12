@@ -1,7 +1,7 @@
 import settings
 
 from flask.ext.wtf import Form
-from app import models
+from app.database import models
 from wtforms import TextField, SelectField, IntegerField, \
                     BooleanField, HiddenField
 from wtforms.validators import Required, IPAddress, NumberRange, \

@@ -7,7 +7,7 @@ import sqlalchemy
 
 from app import extensions as ext
 from app import forms
-from app import models
+from app.database import models
 import settings
 from tools import core
 
