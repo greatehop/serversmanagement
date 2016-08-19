@@ -2,7 +2,7 @@
 
 set +x
 
-PATH_MAIN="/home/jenkins"
+PATH_MAIN=$(pwd)
 PATH_DOWNLOADS_ISO="${PATH_MAIN}/sm_scripts/iso"
 ARIA_OPTS="--seed-time=0 --allow-overwrite=true --force-save=true --auto-file-renaming=false --allow-piece-length-change=true --show-console-readout=true"
 VENV_PATH="${PATH_MAIN}/sm_scripts/${VENV}"

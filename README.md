@@ -91,7 +91,9 @@ mysql -u root -p
 CREATE DATABASE dbname;
 GRANT ALL PRIVILEGES ON dbname.* TO dbuser@host IDENTIFIED BY password WITH GRANT OPTION;
 FLUSH PRIVILEGES;
-cd tools; python ./create_db.py
+
+export FLASK_APP=./run.py
+flask db upgrade
 </pre>
 
 - edit settings.py
@@ -132,6 +134,11 @@ done
 
 <pre>
 screen -t sm python ./run.py
+
+or
+
+export FLASK_APP=./run.py
+screen -t sm flask run_app
 </pre>
 
 ## TODO

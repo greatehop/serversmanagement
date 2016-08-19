@@ -1,5 +1,5 @@
+from app.extensions import db
 import settings
-from app import db
 
 
 class User(db.Model):
