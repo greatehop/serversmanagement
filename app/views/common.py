@@ -1,13 +1,13 @@
-from datetime import datetime
+import datetime as dt
 import re
 
 import flask
 import flask_login
 import sqlalchemy
 
+from app.database import models
 from app import extensions as ext
 from app import forms
-from app.database import models
 import settings
 from tools import core
 
@@ -47,13 +47,16 @@ def tasks(task_id=None):
                     if ver[0][1] in ['6.1', '7.0', '8.0']:
                         venv += ver[0][1]
                 else:
-                    iso = datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
+                    iso = dt.datetime.utcnow().strftime('%H_%M_%S_%d.%m.%Y')
 
                 if form.deploy_name.data:
-                    deploy_name = '%s_%s' % (
-                        flask.g.user.name, form.deploy_name.data)
+                    deploy_name = '{username}_{data}'.format(
+                        username=flask.g.user.name,
+                        data=form.deploy_name.data)
                 else:
-                    deploy_name = '%s_%s' % (flask.g.user.name, iso)
+                    deploy_name = '{username}_{iso}'.format(
+                        username=flask.g.user.name,
+                        iso=iso)
 
                 # ironic support
                 ironic_enabled = 'false'
@@ -64,7 +67,7 @@ def tasks(task_id=None):
                 run = models.Run(
                     user_id=flask.g.user.id,
                     task_id=task_id,
-                    start_datetime=datetime.utcnow(),
+                    start_datetime=dt.datetime.utcnow(),
                     args={'deploy_name': deploy_name,
                           'iso_url': form.iso_url.data,
                           'nodes_count': form.nodes_count.data,
@@ -90,16 +93,16 @@ def tasks(task_id=None):
             form = forms.TaskCleanMOSForm()
 
             # generate alive envs for current user
-            filter = {'state': settings.RUN_STATE['done'],
-                      'user_id': flask.g.user.id,
-                      'task_id': 1}
+            runs_filter = {'state': settings.RUN_STATE['done'],
+                           'user_id': flask.g.user.id,
+                           'task_id': 1}
 
             # generate all alive envs for admin user
             if flask.g.user.is_admin:
-                filter.pop('user_id')
+                runs_filter.pop('user_id')
 
             run_list = models.Run.query.order_by(
-                sqlalchemy.desc(models.Run.id)).filter_by(**filter).all()
+                sqlalchemy.desc(models.Run.id)).filter_by(**runs_filter).all()
 
             if run_list:
                 form.deploy_name.choices = [
@@ -115,7 +118,7 @@ def tasks(task_id=None):
                         user_id=flask.g.user.id, task_id=task_id,
                         args={'deploy_name': exist_run.args['deploy_name'],
                               'venv': exist_run.args['venv']},
-                        start_datetime=datetime.utcnow())
+                        start_datetime=dt.datetime.utcnow())
                     ext.db.session.add(run)
                     ext.db.session.commit()
 
@@ -163,7 +166,7 @@ def runs(run_id=None):
             run = models.Run(
                 user_id=g.user.id, task_id=task_id,
                 args={'deploy_name': exist_run.args['deploy_name']},
-                start_datetime=datetime.utcnow())
+                start_datetime=dt.datetime.utcnow())
             db.session.add(run)
             db.session.commit()
             # execute task
@@ -261,7 +264,7 @@ def about():
 @common.route('/stats', strict_slashes=False)
 @flask_login.login_required
 def stats():
-    cur_time = datetime.utcnow()
+    cur_time = dt.datetime.utcnow()
 
     # get info who loaded servers
     server_list = models.Server.query.join(models.Run).join(
@@ -389,6 +392,7 @@ def after_login(resp):
 @common.errorhandler(404)
 def page_not_found(e):
     return flask.render_template('404.html'), 404
+
 
 @common.errorhandler(Exception)
 def internal_error(e):

@@ -1,6 +1,6 @@
 from app import appcreator
 from app import extensions as ext
-from tools.core import Scheduler
+from tools import core
 
 
 app = appcreator.create_app()
@@ -9,7 +9,7 @@ app = appcreator.create_app()
 @app.cli.command()
 def run_app():
     # run daemon in background
-    daemon = Scheduler()
+    daemon = core.Scheduler()
     daemon.start()
 
     # run web app

@@ -13,7 +13,7 @@ def create_app(blueprints=None):
     app = flask.Flask(__name__)
     app.config.from_object('settings')
 
-    _register_extensions(app)
+    _init_extensions(app)
     if blueprints is None:
         blueprints = BLUEPRINTS
 
@@ -27,7 +27,7 @@ def _register_blueprints(app, blueprints):
         app.register_blueprint(blueprint)
 
 
-def _register_extensions(app):
+def _init_extensions(app):
     ext.alembic.init_app(app)
     ext.socketio.init_app(app)
 
