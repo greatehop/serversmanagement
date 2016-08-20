@@ -38,3 +38,6 @@ RUN_STATE = {'in_queue': 0, 'in_progress': 1, 'done': 2,
 OPENID = {'launchpad':
           {'url': 'https://launchpad.net/people/+me',
                   'openid': 'https://login.launchpad.net/+openid'}}
+
+ALEMBIC = {'version_locations': [],
+           'script_location': 'database/migrations'}

@@ -1,10 +1,20 @@
-from app import app, socketio
-from tools.core import Scheduler
+from app import appcreator
+from app import extensions as ext
+from tools import core
 
-if __name__ == '__main__':
+
+app = appcreator.create_app()
+
+
+@app.cli.command()
+def run_app():
     # run daemon in background
-    daemon = Scheduler()
+    daemon = core.Scheduler()
     daemon.start()
 
     # run web app
-    socketio.run(app, host='0.0.0.0', port=5000)
+    ext.socketio.run(app, host='0.0.0.0', port=5000)
+
+
+if __name__ == '__main__':
+    run_app()
